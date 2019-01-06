@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>服务注册</title>
+    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+    <style>
+        .label{
+            width:100px;
+            text-align: right;
+            padding: 4px;
+            display: inline-block;
+        }
+    </style>
+
+    <script>
+        function checkCenterIP(){
+            $('#centerip_right').html('  ✗');
+            $('#centerip_right').css('color', 'red');
+
+            var ip = $('#centerip').val();
+            $.get('http://' + ip + ':4999/nsop/hamaster/api/heartbeat', function(data,status){
+                console.log(ip, status, data);
+                if(status === 'success'){
+                    centerip_mark = true;
+                    $('#centerip_right').html('  ✓');
+                    $('#centerip_right').css('color', 'green');
+                    $("#sub").removeAttr("disabled");
+                }
+            });
+        }
+
+        function checkInput(){
+            var cip = $('#centerip').val();
+            var lip = $('#localip').val();
+            var code = $('#code').val();
+            var name = $('#name').val();
+
+            return cip != '' && lip != '' && code != '' && name != '';
+        }
+
+        function submit(){
+            if(!checkInput()){
+                alert('必要参数没有填！');
+                return;
+            }
+
+            var ip = $('#centerip').val();
+            var url = 'http://' + ip + ':4999/nsop/hamaster/api/org/report';
+            var param = {
+                centerip:ip,
+                host:$('#localip').val(),
+                code:$('#code').val(),
+                name:$('#name').val()
+            };
+            $.ajax(
+                {
+                    url: url,
+                    type: "POST",
+                    data: JSON.stringify(param),
+                    cache: false,
+                    contentType: "application/json;charset=utf-8",
+                    processData: false,
+                    dataType: "json",
+                    success: function (data, status) {
+                        console.log(data, status);
+                        if(data.code === 200){
+                            alert('注册成功！');
+                        }else{
+                            alert('注册失败，' + data.data);
+                        }
+                    },
+                    error: function (reason) {
+                        console.log('error', reason);
+                    }
+                }
+            );
+        }
+
+        $(function(){
+            $("#sub").attr("disabled","disabled");
+            $('#centerip').change(checkCenterIP);
+            $('#sub').click(submit);
+
+        });
+    </script>
+
+</head>
+<body>
+
+<div>
+    <div><h3>服务注册</h3></div>
+    <div><span class="label">中心IP：</span><input type="text" id="centerip" name="centerip" value="" /><span id="centerip_right" style="padding-left: 8px"></span></div>
+    <div>
+        <span class="label">本机IP：</span><input type="text" id="localip" name="localip" value="<%= localip%>" />
+    </div>
+    <div>
+        <span class="label">本机编号：</span><input type="text" id="code" name="code" value="" />
+    </div>
+    <div>
+        <span class="label">本机名称：</span><input type="text" id="name" name="name" value="" />
+    </div>
+    <div>
+        <span class="label">&nbsp;</span><input type="button" value="submit" id="sub" />
+    </div>
+</div>
+</body>
+</html>
