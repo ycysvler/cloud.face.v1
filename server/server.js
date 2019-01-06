@@ -36,7 +36,7 @@ app.use(koastatic(path.join(__dirname, './public')));       // 处理静态资�
 app.use(bodyparser());                                      // 使用ctx.body解析中间件
 app.use(consuming);                                         // 计算耗时中间件
 
-const root = loader(path.join(__dirname, './routers/api'), '/face/api');
+const root = loader(path.join(__dirname, './routers/api'), '/rest/face/v3');
 app.use(root.routes()).use(root.allowedMethods());          // 加载路由
 
 let server = app.listen(config.server.face.port);           // 启动http服务

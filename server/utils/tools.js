@@ -48,8 +48,8 @@ class tools {
         });
 
         if (!ok) {
-            ctx.status = 400;                                   // 设置状态吗
-            ctx.body = {code: ctx.status, message: message};    // 设置消息体
+            ctx.status = 400;                                           // 设置状态吗
+            ctx.body = {error_code: ctx.status, message: message};      // 设置消息体
             // 记录日志
             log.warn({'type': 'required', 'path': ctx.path, 'body': ctx.request.body}, message);
         }

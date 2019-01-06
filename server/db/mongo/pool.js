@@ -2,7 +2,7 @@ let faceSchemas = require('./faceschemas');
 const pool = new Map();
 
 let getMongoPool = (dbname)=>{
-    dbname = "facedb";
+    dbname = "cloud_facedb";
 
     if(!pool.has(dbname)){
         let schemas = new faceSchemas();

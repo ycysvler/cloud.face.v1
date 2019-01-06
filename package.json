@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon server.js"
+    "debug": "(set NODE_ENV=development) && webpack -w",
+    "release": "(set NODE_ENV=production) && webpack -w",
+    "server": "nodemon server/server.js"
   },
   "keywords": [],
   "author": "",
@@ -52,6 +54,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "reflux": "^6.4.1",
+    "reqwest": "^2.0.5",
     "script-loader": "^0.7.2",
     "style-loader": "^0.19.0",
     "url-loader": "^0.6.2",
