@@ -3,6 +3,9 @@ import {Layout, Menu, Button,Icon} from 'antd';
 import {HashRouter as Router,Link, Switch, Route} from 'react-router-dom';
 import NotFound from '../notfound';
 import './main.less';
+
+import GroupList from '../group/list';
+
 const SubMenu = Menu.SubMenu;
 const {Header, Content, Sider} = Layout;
 
@@ -42,7 +45,9 @@ export default class CentrePlatform extends React.Component {
                 <Layout >
                     <Router>
                         <Switch>
+                            <Route path="/main" exact component={GroupList}/>
                             <Route component={NotFound}/>
+
                         </Switch>
                     </Router>
                 </Layout>

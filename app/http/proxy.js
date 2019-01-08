@@ -40,10 +40,10 @@ class HttpProxy {
                     //xhr.setRequestHeader("authorToken", token);
                 },
                 success: function (data, status) {
-                    if (data.code === 401) {
+                    if (data.error_code === 401) {
                         //UserActions.goLogin();
                     } else {
-                        if (data.code === 200 || data.code === 404) {
+                        if (data.error_code === 0 || data.error_code === 404) {
                             callback(status, data);
                         } else {
                             //SystemActions.alertWarning(data.reason);

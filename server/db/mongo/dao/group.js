@@ -24,7 +24,7 @@ module.exports = class GroupLogic {
     list(){
         return new Promise((resolve, reject) => {
             let doc = getMongoPool().Group;
-            doc.find({},{_id:0,group_id:1,desc:1}).sort({_id:1}).exec(function (err, Item) {
+            doc.find({},{_id:0,group_id:1,name:1,desc:1,updatetime:1}).sort({_id:1}).exec(function (err, Item) {
                 if (err) {
                     reject(err);
                 } else {
@@ -49,8 +49,8 @@ module.exports = class GroupLogic {
 
     removeByIds(ids) {
         return new Promise((resolve, reject) => {
-            let doc = getMongoPool().Catalog;
-            doc.deleteMany({id: {$in: ids}}, function (err, Item) {
+            let doc = getMongoPool().Group;
+            doc.deleteMany({group_id: {$in: ids}}, function (err, Item) {
                 if (err) {
                     reject(err);
                 } else {

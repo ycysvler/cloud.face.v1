@@ -71,4 +71,25 @@ module.exports = function (router) {
                 {error_code: error_code};
         }
     });
+
+    /*
+     * 删除分组
+     * { "group_id":"1" }
+     * */
+    router.delete('/faceset/group/deleteids', async(ctx) => {
+        if (true) {
+            let error_code = 0;
+            let data = null;
+            let error_msg = null;
+
+            data = await logic.removeByIds(ctx.request.body).catch(function (err) {
+                error_code = err.code;
+                error_msg = err.errmsg;
+            });
+
+            ctx.body = error_code ?
+                {error_code: error_code, error_msg} :
+                {error_code: error_code};
+        }
+    });
 };

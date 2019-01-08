@@ -13,6 +13,7 @@ module.exports = class Schemas {
         // 用户组
         this.groupSchema = new mongoose.Schema({
             group_id: {type: String, index: {unique: true, dropDups: true}},    // 分组ID
+            name: String,                                                       // 名称
             desc: String,                                                       // 描述信息
             updatetime: Date                                                    // 更新时间
         });
