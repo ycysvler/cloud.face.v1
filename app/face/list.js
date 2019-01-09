@@ -4,18 +4,18 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {Layout,  Modal, Table, Breadcrumb, Button, Row, Col, Input} from 'antd';
-import {UserStore, UserActions} from './reflux.js';
+import {FaceStore, FaceActions} from './reflux.js';
 const {Header, Content} = Layout;
 
 export default class FaceList extends React.Component {
     constructor(props) {
         super(props);
-        this.unsubscribe = UserStore.listen(this.onStatusChange.bind(this));
-        this.state = {group_id:props.match.params.group_id, items: [], deleteBtnEnable: false, newItem: {}};
+        this.unsubscribe = FaceStore.listen(this.onStatusChange.bind(this));
+        this.state = {group_id:props.match.params.group_id,user_id:props.match.params.user_id, items: [], deleteBtnEnable: false, newItem: {}};
     }
 
     componentDidMount() {
-        UserActions.list(this.state.group_id,1,10);
+        FaceActions.list(this.state.group_id,this.state.user_id);
     }
 
     componentWillUnmount() {
@@ -43,12 +43,8 @@ export default class FaceList extends React.Component {
     columns = [
         {
             title: '编号',
-            dataIndex: 'user_id',
+            dataIndex: 'face_token',
             render: (text) => {return <Link to={"/main/user/" + text} >{text}</Link>},
-        },
-        {
-            title: '描述',
-            dataIndex: 'desc',
         },
         {
             title: '更新时间',
@@ -104,20 +100,20 @@ export default class FaceList extends React.Component {
         return (<Layout>
                 <Breadcrumb className="breadcrumb">
                     <Breadcrumb.Item>人像库</Breadcrumb.Item>
-                    <Breadcrumb.Item><Link to={'/main/group'}>人像库管理</Link></Breadcrumb.Item>
+                    <Breadcrumb.Item><Link to={'/main/user/' + this.state.group_id}>人像库管理</Link></Breadcrumb.Item>
                     <Breadcrumb.Item>用户列表</Breadcrumb.Item>
                 </Breadcrumb>
 
                 <Layout className="list-content">
                     <Header className="list-header">
-                        <Button type="primary" onClick={this.showModal}>添加用户</Button>
+                        <Button type="primary" onClick={this.showModal}>添加人像</Button>
                         <Button type="danger" disabled={!this.state.deleteBtnEnable} onClick={this.deleteClick}
-                                style={{marginLeft: 16}}>删除用户</Button>
+                                style={{marginLeft: 16}}>删除人像</Button>
                     </Header>
                     <Content >
                         <Table
                             className="bg-white"
-                            rowKey="user_id"
+                            rowKey="face_token"
                             rowSelection={this.rowSelection} columns={this.columns} dataSource={this.state.items}
                             pagination={{
                                 onChange: this.onPageChange,

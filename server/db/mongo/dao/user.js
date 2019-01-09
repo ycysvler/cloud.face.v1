@@ -25,7 +25,7 @@ module.exports = class UserLogic {
         return new Promise((resolve, reject) => {
             let doc = getMongoPool().User;
             doc.count().exec(function (err, total) {
-                doc.find({group_id:group_id},{_id:0,group_id:1,user_id:1,desc:1,updatetime:1}).limit(length).skip(start).exec(function (err, items) {
+                doc.find({group_id:group_id},{_id:0,group_id:1,user_id:1,desc:1,updatetime:1}).sort({updatetime:-1}).limit(length).skip(start).exec(function (err, items) {
                     if (err) {
                         reject(err);
                     } else {
@@ -49,10 +49,10 @@ module.exports = class UserLogic {
         });
     }
 
-    removeByIds(ids) {
+    removeByIds(group_id, ids) {
         return new Promise((resolve, reject) => {
-            let doc = getMongoPool().Catalog;
-            doc.deleteMany({id: {$in: ids}}, function (err, Item) {
+            let doc = getMongoPool().User;
+            doc.deleteMany({group_id:group_id,user_id: {$in: ids}}, function (err, Item) {
                 if (err) {
                     reject(err);
                 } else {

@@ -2,21 +2,20 @@ import Reflux from 'reflux';
 import Config from 'config';
 import propx from '../http/proxy';
 
-const UserActions = Reflux.createActions([
+const FaceActions = Reflux.createActions([
         'list',
         'add',
         'delete'
     ]
 );
 
-const UserStore = Reflux.createStore({
-    listenables: [UserActions],
+const FaceStore = Reflux.createStore({
+    listenables: [FaceActions],
 
     //获取列表
-    onList: function (group_id, pageIndex, pageSize) {
+    onList: function (group_id,user_id) {
         let self = this;
-        let start = (pageIndex -1) * pageSize;
-        let url = Config.server + `/rest/face/v3/faceset/group/getusers?group_id=${group_id}&start=${start}&length=${pageSize}`;
+        let url = Config.server + `/rest/face/v3/faceset/face/getlist?group_id=${group_id}&user_id=${user_id}`;
 
         let param = {};
 
@@ -27,10 +26,10 @@ const UserStore = Reflux.createStore({
                 self.items = [];
             }
             else {
-                self.items = data.user_id_list.items;
+                self.items = data.face_list;
             }
 
-            self.trigger('list', {total: data.user_id_list.total, list: self.items, param: param});
+            self.trigger('list', {total: self.items.length, list: self.items, param: param});
         });
     },
 
@@ -61,5 +60,5 @@ const UserStore = Reflux.createStore({
 });
 
 
-exports.UserActions = UserActions;
-exports.UserStore = UserStore;
+exports.FaceActions = FaceActions;
+exports.FaceStore = FaceStore;

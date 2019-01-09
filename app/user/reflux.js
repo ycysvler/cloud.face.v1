@@ -36,7 +36,7 @@ const UserStore = Reflux.createStore({
 
     onAdd:function(item){
         let self = this;
-        let url = Config.server + "/rest/face/v3/faceset/group/add";
+        let url = Config.server + "/rest/face/v3/faceset/user/add";
 
         let param = item;
 
@@ -46,11 +46,11 @@ const UserStore = Reflux.createStore({
         });
     },
 
-    onDelete:function(ids){
+    onDelete:function(group_id, user_ids){
         let self = this;
-        let url = Config.server + "/rest/face/v3/faceset/group/deleteids";
+        let url = Config.server + "/rest/face/v3/faceset/user/deleteids";
 
-        let param = ids;
+        let param ={group_id, user_ids};
 
         propx.delete(url, param, (code, data) => {
             console.log(url, JSON.stringify(param));

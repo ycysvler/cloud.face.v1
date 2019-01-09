@@ -28,23 +28,23 @@ export default class FaceUserList extends React.Component {
             this.setState({items: data.list, deleteBtnEnable: false, total: data.total});
         }
         if (type === 'delete') {
-            UserActions.list();
+            UserActions.list(this.state.group_id,1,10);
         }
         if (type === 'add') {
-            UserActions.list();
+            UserActions.list(this.state.group_id,1,10);
         }
     };
 
     deleteClick = () => {
         console.log('selectedRowKeys', this.state.selectedRowKeys);
-        UserActions.delete(this.state.selectedRowKeys);
+        UserActions.delete(this.state.group_id, this.state.selectedRowKeys);
     };
 
     columns = [
         {
             title: '编号',
             dataIndex: 'user_id',
-            render: (text) => {return <Link to={"/main/user/" + text} >{text}</Link>},
+            render: (text,item) => {return <Link to={"/main/face/" + item.group_id + "/" + item.user_id } >{text}</Link>},
         },
         {
             title: '描述',
@@ -89,7 +89,6 @@ export default class FaceUserList extends React.Component {
     // 确定添加组的弹窗
     handleOk = (e) => {
         let item = this.state.newItem;
-        item.parentid = "0";
         UserActions.add(item);
         this.setState({visible: false, newItem: {}});
     };
@@ -127,7 +126,7 @@ export default class FaceUserList extends React.Component {
 
                         <Modal
                             className="modify"
-                            title="新建分组"
+                            title="添加用户"
                             visible={this.state.visible}
                             onOk={this.handleOk}
                             onCancel={this.handleCancel}
@@ -142,35 +141,24 @@ export default class FaceUserList extends React.Component {
                                 <Col offset={2} span={4} className="title">编号</Col>
                                 <Col offset={2} span={13}>
                                     <Input
-                                        value={this.state.newItem.group_id}
+                                        value={this.state.newItem.user_id}
                                         onChange={(e) => {
                                             let item = this.state.newItem;
-                                            item.group_id = e.target.value;
+                                            item.group_id = this.state.group_id;
+                                            item.user_id = e.target.value;
                                             this.setState({newItem: item});
                                         }}/>
                                 </Col>
                             </Row>
                             <Row><Col span={24}>&nbsp;</Col></Row>
                             <Row >
-                                <Col offset={2} span={4} className="title">库名称</Col>
-                                <Col offset={2} span={13}>
-                                    <Input
-                                        value={this.state.newItem.name}
-                                        onChange={(e) => {
-                                            let item = this.state.newItem;
-                                            item.name = e.target.value;
-                                            this.setState({newItem: item});
-                                        }}/>
-                                </Col>
-                            </Row>
-                            <Row><Col span={24}>&nbsp;</Col></Row>
-                            <Row >
-                                <Col offset={2} span={4} className="title">库描述</Col>
+                                <Col offset={2} span={4} className="title">描述</Col>
                                 <Col offset={2} span={13}>
                                     <Input
                                         value={this.state.newItem.desc}
                                         onChange={(e) => {
                                             let item = this.state.newItem;
+                                            item.group_id = this.state.group_id;
                                             item.desc = e.target.value;
                                             this.setState({newItem: item});
                                         }}/>
