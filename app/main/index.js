@@ -5,6 +5,7 @@ import NotFound from '../notfound';
 import './main.less';
 
 import GroupList from '../group/list';
+import UserList from '../user/list';
 
 const SubMenu = Menu.SubMenu;
 const {Header, Content, Sider} = Layout;
@@ -46,6 +47,8 @@ export default class CentrePlatform extends React.Component {
                     <Router>
                         <Switch>
                             <Route path="/main" exact component={GroupList}/>
+                            <Route path="/main/group"  component={GroupList}/>
+                            <Route path="/main/user/:group_id"  component={UserList}/>
                             <Route component={NotFound}/>
 
                         </Switch>

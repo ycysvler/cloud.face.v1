@@ -24,12 +24,14 @@ module.exports = class UserLogic {
     list(group_id, start, length){
         return new Promise((resolve, reject) => {
             let doc = getMongoPool().User;
-            doc.find({group_id:group_id},{_id:0,group_id:1,user_id:1,desc:1}).limit(length).skip(start).exec(function (err, Item) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(Item);
-                }
+            doc.count().exec(function (err, total) {
+                doc.find({group_id:group_id},{_id:0,group_id:1,user_id:1,desc:1,updatetime:1}).limit(length).skip(start).exec(function (err, items) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve({total, items});
+                    }
+                });
             });
         });
     }
