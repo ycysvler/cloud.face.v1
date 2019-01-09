@@ -113,14 +113,16 @@ module.exports = function (router) {
     * 删除分组
     * { "group_id":"1" }
     * */
-    router.delete('/faceset/group/delete', async(ctx) => {
-        let ok = tools.required(ctx, ["group_id"]);
+    router.delete('/faceset/face/delete', async(ctx) => {
+        let ok = tools.required(ctx, ["face_token"]);
         if (ok) {
             let error_code = 0;
             let data = null;
             let error_msg = null;
 
-            data = await logic.remove(ctx.request.body).catch(function (err) {
+            let face_token = ctx.request.query['face_token'];
+
+            data = await logic.remove(face_token).catch(function (err) {
                 error_code = err.code;
                 error_msg = err.errmsg;
             });

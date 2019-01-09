@@ -2,20 +2,29 @@
  * Created by yanggang on 2017/3/6.
  */
 import React from 'react';
+import Config from 'config';
 import {Link} from 'react-router-dom';
-import {Layout,  Modal, Table, Breadcrumb, Button, Row, Col, Input} from 'antd';
+import {Layout, Modal, Card, Icon, Breadcrumb, Button, Row, Col, Upload} from 'antd';
 import {FaceStore, FaceActions} from './reflux.js';
+import './index.less';
 const {Header, Content} = Layout;
-
+const {Meta} = Card;
 export default class FaceList extends React.Component {
     constructor(props) {
         super(props);
         this.unsubscribe = FaceStore.listen(this.onStatusChange.bind(this));
-        this.state = {group_id:props.match.params.group_id,user_id:props.match.params.user_id, items: [], deleteBtnEnable: false, newItem: {}};
+        this.state = {
+            fileList: [],
+            group_id: props.match.params.group_id,
+            user_id: props.match.params.user_id,
+            items: [],
+            deleteBtnEnable: false,
+            newItem: {}
+        };
     }
 
     componentDidMount() {
-        FaceActions.list(this.state.group_id,this.state.user_id);
+        FaceActions.list(this.state.group_id, this.state.user_id);
     }
 
     componentWillUnmount() {
@@ -24,56 +33,11 @@ export default class FaceList extends React.Component {
 
     onStatusChange = (type, data) => {
         if (type === 'list') {
-            console.log('items', data);
             this.setState({items: data.list, deleteBtnEnable: false, total: data.total});
         }
         if (type === 'delete') {
-            UserActions.list();
+            FaceActions.list(this.state.group_id, this.state.user_id);
         }
-        if (type === 'add') {
-            UserActions.list();
-        }
-    };
-
-    deleteClick = () => {
-        console.log('selectedRowKeys', this.state.selectedRowKeys);
-        UserActions.delete(this.state.selectedRowKeys);
-    };
-
-    columns = [
-        {
-            title: '编号',
-            dataIndex: 'face_token',
-            render: (text) => {return <Link to={"/main/user/" + text} >{text}</Link>},
-        },
-        {
-            title: '更新时间',
-            dataIndex: 'updatetime',
-        }];
-
-    rowSelection = {
-        onChange: (selectedRowKeys, selectedRows) => {
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            this.state.selectedRowKeys = selectedRowKeys;
-            if (selectedRowKeys.length > 0) {
-                this.setState({deleteBtnEnable: true, selectedRowKeys: selectedRowKeys});
-            } else {
-                this.setState({deleteBtnEnable: false, selectedRowKeys: selectedRowKeys});
-            }
-        },
-        onSelect: (record, selected, selectedRows) => {
-            console.log(record, selected, selectedRows);
-        },
-        onSelectAll: (selected, selectedRows, changeRows) => {
-            console.log(selected, selectedRows, changeRows);
-        },
-        getCheckboxProps: record => ({
-            disabled: record.key === '3',
-        }),
-    };
-
-    onPageChange = (pageNumber) => {
-        UserActions.list(this.state.group_id,pageNumber, 10);
     };
 
     // 显示添加组的弹窗
@@ -82,22 +46,34 @@ export default class FaceList extends React.Component {
             visible: true,
         });
     };
-    // 确定添加组的弹窗
-    handleOk = (e) => {
-        let item = this.state.newItem;
-        item.parentid = "0";
-        UserActions.add(item);
-        this.setState({visible: false, newItem: {}});
-    };
+
     // 取消添加组的弹窗
     handleCancel = (e) => {
         this.setState({
             visible: false,
         });
     };
+    // 上传图片
+    uploadChange = () => {
+        // 刷新列表
+        FaceActions.list(this.state.group_id, this.state.user_id);
+        // 隐藏弹窗
+        this.setState({visible: false});
+    };
+
+    onRemoveFace=(face_token)=>{
+        FaceActions.delete(face_token);
+    };
 
     render() {
-        return (<Layout>
+        const uploadButton = (
+            <div>
+                <Icon type="plus"/>
+                <div className="ant-upload-text">Upload</div>
+            </div>
+        );
+
+        return (<Layout className="face">
                 <Breadcrumb className="breadcrumb">
                     <Breadcrumb.Item>人像库</Breadcrumb.Item>
                     <Breadcrumb.Item><Link to={'/main/user/' + this.state.group_id}>人像库管理</Link></Breadcrumb.Item>
@@ -107,69 +83,50 @@ export default class FaceList extends React.Component {
                 <Layout className="list-content">
                     <Header className="list-header">
                         <Button type="primary" onClick={this.showModal}>添加人像</Button>
-                        <Button type="danger" disabled={!this.state.deleteBtnEnable} onClick={this.deleteClick}
-                                style={{marginLeft: 16}}>删除人像</Button>
+                        <Button type="primary"
+                                style={{marginLeft: 16}}>批量添加</Button>
                     </Header>
                     <Content >
-                        <Table
-                            className="bg-white"
-                            rowKey="face_token"
-                            rowSelection={this.rowSelection} columns={this.columns} dataSource={this.state.items}
-                            pagination={{
-                                onChange: this.onPageChange,
-                                 total: this.state.total,
-                                hideOnSinglePage: true
-                            }} size="middle"/>
+                        <div style={{display: 'flex', flexWrap: 'wrap', background:'#fbfbfb', padding:8}}>
+                            {
+                                this.state.items.map((item, index) => {
+                                    return <div className="face-item" key={item.face_token}>
+
+                                        <img style={{
+                                            height: 180,
+                                            borderRadius: 5,
+                                            border: 'solid 1px #eee'
+                                        }}
+                                             src={`${Config.server}/rest/face/v3/faceset/face/source/${item.face_token}`}
+                                             ></img >
+                                        <Icon type="delete" onClick={this.onRemoveFace.bind(this, item.face_token)} theme="filled" className="delete"  />
+                                    </div>
+                                })
+                            }
+
+                        </div>
 
                         <Modal
                             className="modify"
-                            title="新建分组"
+                            title="上传人像"
+                            width={160}
                             visible={this.state.visible}
                             onOk={this.handleOk}
                             onCancel={this.handleCancel}
-                            footer={[
-                                <Button key="submit" type="primary" onClick={this.handleOk}>
-                                    确认
-                                </Button>,
-                                <Button key="back" onClick={this.handleCancel}>取消</Button>,
-                            ]}
+                            footer={null}
                         >
+
                             <Row >
-                                <Col offset={2} span={4} className="title">编号</Col>
-                                <Col offset={2} span={13}>
-                                    <Input
-                                        value={this.state.newItem.group_id}
-                                        onChange={(e) => {
-                                            let item = this.state.newItem;
-                                            item.group_id = e.target.value;
-                                            this.setState({newItem: item});
-                                        }}/>
-                                </Col>
-                            </Row>
-                            <Row><Col span={24}>&nbsp;</Col></Row>
-                            <Row >
-                                <Col offset={2} span={4} className="title">库名称</Col>
-                                <Col offset={2} span={13}>
-                                    <Input
-                                        value={this.state.newItem.name}
-                                        onChange={(e) => {
-                                            let item = this.state.newItem;
-                                            item.name = e.target.value;
-                                            this.setState({newItem: item});
-                                        }}/>
-                                </Col>
-                            </Row>
-                            <Row><Col span={24}>&nbsp;</Col></Row>
-                            <Row >
-                                <Col offset={2} span={4} className="title">库描述</Col>
-                                <Col offset={2} span={13}>
-                                    <Input
-                                        value={this.state.newItem.desc}
-                                        onChange={(e) => {
-                                            let item = this.state.newItem;
-                                            item.desc = e.target.value;
-                                            this.setState({newItem: item});
-                                        }}/>
+
+                                <Col span={24}>
+                                    <Upload
+                                        showUploadList={false}
+                                        action={Config.server + `/rest/face/v3/faceset/face/add?group_id=${this.state.group_id}&user_id=${this.state.user_id}`}
+                                        listType="picture-card"
+                                        onChange={this.uploadChange}
+                                    >
+                                        {uploadButton}
+                                    </Upload>
                                 </Col>
                             </Row>
                         </Modal>

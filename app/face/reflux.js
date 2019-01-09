@@ -4,7 +4,6 @@ import propx from '../http/proxy';
 
 const FaceActions = Reflux.createActions([
         'list',
-        'add',
         'delete'
     ]
 );
@@ -33,23 +32,11 @@ const FaceStore = Reflux.createStore({
         });
     },
 
-    onAdd:function(item){
+    onDelete:function(face_token){
         let self = this;
-        let url = Config.server + "/rest/face/v3/faceset/group/add";
+        let url = Config.server + "/rest/face/v3/faceset/face/delete?face_token=" + face_token;
 
-        let param = item;
-
-        propx.post(url, param, (code, data) => {
-            console.log(url, JSON.stringify(param));
-            self.trigger('add', {data:data, param: param});
-        });
-    },
-
-    onDelete:function(ids){
-        let self = this;
-        let url = Config.server + "/rest/face/v3/faceset/group/deleteids";
-
-        let param = ids;
+        let param = {};
 
         propx.delete(url, param, (code, data) => {
             console.log(url, JSON.stringify(param));

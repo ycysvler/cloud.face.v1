@@ -82,7 +82,10 @@ function uploadFile(ctx, options) {
         // 解析结束事件
         busboy.on('finish', function () {
             console.log('文件上结束');
-            resolve(result);
+            setTimeout(()=>{
+                resolve(result);
+            }, 10);
+
         })
 
         // 解析错误事件

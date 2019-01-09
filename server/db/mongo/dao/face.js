@@ -25,7 +25,7 @@ module.exports = class FaceLogic {
     list(group_id, user_id) {
         return new Promise((resolve, reject) => {
             let doc = getMongoPool().Face;
-            doc.find({group_id: group_id, user_id: user_id, status: {$gt: -1}}, {_id: 1, status:1}).exec(function (err, Item) {
+            doc.find({group_id: group_id, user_id: user_id, status: {$gt: -1}}, {_id: 1, status:1}).sort({updatetime:1}).exec(function (err, Item) {
                 if (err) {
                     reject(err);
                 } else {
@@ -52,10 +52,12 @@ module.exports = class FaceLogic {
         });
     }
 
-    remove(data) {
+    remove(face_token) {
         return new Promise((resolve, reject) => {
             let doc = getMongoPool().Face;
-            doc.deleteMany({group_id: data.group_id}, function (err, Item) {
+            console.log(face_token);
+
+            doc.update({"_id":mongoose.Types.ObjectId(face_token)},{$set:{status:-1}}, function (err, Item) {
                 if (err) {
                     reject(err);
                 } else {
@@ -65,16 +67,4 @@ module.exports = class FaceLogic {
         });
     }
 
-    removeByIds(ids) {
-        return new Promise((resolve, reject) => {
-            let doc = getMongoPool().Catalog;
-            doc.deleteMany({id: {$in: ids}}, function (err, Item) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(Item);
-                }
-            });
-        });
-    }
 };

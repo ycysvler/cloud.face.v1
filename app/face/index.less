@@ -1,0 +1,23 @@
+.face {
+  .face-item {
+    margin: 16px 16px 0 0;
+    position: relative;
+
+    .delete {
+      visibility: hidden ;
+      position: absolute;
+      right: 6px;
+      top: 6px;
+      cursor: pointer;
+    }
+    .delete:hover {
+      color: #ff353b;
+    }
+  }
+
+  .face-item:hover{
+    .delete{
+      visibility: visible ;
+    }
+  }
+}
