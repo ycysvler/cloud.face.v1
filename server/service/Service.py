@@ -22,8 +22,8 @@ sys.setdefaultencoding('utf-8')
 
 # http 
 from flask import Flask,request ,Response
- 
-model_dir = "/home/zzy/models"
+
+model_dir = "/root/faceRetrieval/models"
 
 faceService = FaceService(model_dir,int(0),int(10),int(10))
 faceService.start()
