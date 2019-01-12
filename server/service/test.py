@@ -36,6 +36,9 @@ def test1():
         res = net.extractFeature(im_temp)
         print res
 
+# 给一个图片，获取特征
+# 返回值 code : 0 计算失败 1 计算成功
+# 返回值 feature : 特征
 def getFeature(picPath):
     code = 0
     feature = None
@@ -47,25 +50,26 @@ def getFeature(picPath):
         code = 1
     return code, feature
 
-def mongo():
+# 批量计算特征
+# status = 0 的计算
+def batchFeature():
     faces = mongodb.db('').faces.find({'status': 0})
     for face in faces:
-        print 'face service > work >', '\033[1;31m id [' + str(face["_id"]) + '] is missing !\033[0m'
+        print 'batch feature > ', '\033[1;32m ' + str(face["_id"]) + ' \033[0m'
+        # 图片路径
         imagepath = 'temp/' + str(face['_id']) + '.jpg'
         file = open(imagepath, 'wb')
         file.write(face['source'])
         file.close()
+        # 计算特征
         code,feature = getFeature(imagepath)
-
-        # delete file
+        # 删除临时图片
         os.remove(imagepath)
-
         if code > 0:
-            print feature
-
+            mongodb.db('').faces.update({'_id': face["_id"]},{'$set': {'status': 1, 'feature': feature}})
 
 if __name__ == '__main__':
-    mongo()
+    batchFeature()
 
 
 
