@@ -32,10 +32,20 @@ def test1():
         res = net.extractFeature(im_temp)
         print res
 
-if __name__ == '__main__':
+def mongo():
     faces = mongodb.db('').faces.find({'status': 0})
     for face in faces:
-        print face['_id']
+        if face == None:
+            print 'face service > work >', '\033[1;31m id [' + str(face["_id"]) + '] is missing !\033[0m'
+            imagepath = './temp/' + face['_id'] + '.jpg'
+            file = open(imagepath, 'wb')
+            file.write(face['source'])
+            file.close()
+            #im = cv2.imread(imagepath)
+
+
+if __name__ == '__main__':
+    mongo()
 
 
 
