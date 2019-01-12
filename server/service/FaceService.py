@@ -75,12 +75,29 @@ def buildIndex(params, detector , net):
         features.append(face["feature"])
         mongodb.db('').faces.update({'_id': face["_id"]}, {'$set': {'group_index':index}})
         index = index + 1
-    net.buildRetrievalDatabase(features, "index/" + params["group_id"])
+    net.buildRetrievalDatabase(features, "index/" + params["group_id"] + ".tree")
 
     return {"code": 200, "group_id": params["group_id"]}
 
 def query(params, detector , net):
-    return {"code": 200, "group_id": params["group_id"]}
+    # 索引文件
+    retrieval_model_path = "index/" + params["group_id"] + ".tree"
+
+    # 识别多张图
+    image_path = params["image_path"]
+    im = cv2.imread(image_path)
+    boxes, points = detector.detect(im)
+
+    result = []
+
+    if (len(boxes) == len(points)):
+        for i in range(len(boxes)):
+            im_temp = IFaceZoneDetect.get_align_face(detector, im, boxes[i], points[i])
+            res = net.query(im_temp, 1, retrieval_model_path)
+            result.append(res)
+
+    # 用每一张图去搜索
+    return {"code": 200, "result": result}
 
 def writeImage(bytes, name):
     # 图片路径
@@ -151,7 +168,10 @@ def restBuildIndex():
 def restQuery():
     group_id = request.values.get("group_id")
     image_path = request.values.get("image_path")
-    pip_app.send({"type":"query", "group_id": group_id, "image_path":image_path})
+    count = request.values.get("count")
+    if count == None:
+        count = 1
+    pip_app.send({"type":"query", "group_id": group_id, "image_path":image_path, "count":count})
     result = pip_app.recv()
     return Response(json.dumps(result),mimetype='application/json')
 
