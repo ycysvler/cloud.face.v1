@@ -64,10 +64,10 @@ def batchFeature(params, detector , net):
 
     return {"code": 200, "group_id": params["group_id"]}
 
-def buildIndex(params):
+def buildIndex(params, detector , net):
     return {"code": 200, "group_id": params["group_id"]}
 
-def query(params):
+def query(params, detector , net):
     return {"code": 200, "group_id": params["group_id"]}
 
 def writeImage(bytes, name):
@@ -101,13 +101,13 @@ def startService():
         params = pip_service.recv()
         print 'face service > work >', '\033[1;32m request  ' + str(params) + ' \033[0m'
         if params["type"] == "singlefeature":
-            result = singleFeature(params)
+            result = singleFeature(params, detector , net)
         if params["type"] == "batchfeature":
             result = batchFeature(params, detector , net)
         if params["type"] == "buildindex":
-            result = buildIndex(params)
+            result = buildIndex(params, detector , net)
         if params["type"] == "query":
-            result = query(params)
+            result = query(params, detector , net)
         pip_service.send(result)
 
 # 单图像计算特征
