@@ -49,8 +49,8 @@ def buildIndex():
 # 人像库搜索人像
 @app.route('/query')
 def query():
-    id = request.args.get("group_id")
-    image_path = request.args.get("image_path")
+    id = request.values.get("group_id")
+    image_path = request.values.get("image_path")
     return Response(json.dumps({"id":id,"image_path":image_path, "haha":"haha"}),mimetype='application/json')
 
 # http server progress, port = 4003
