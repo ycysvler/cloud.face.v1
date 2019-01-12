@@ -36,7 +36,10 @@ pip_app, pip_service = Pipe()
 
 def startService():
     print 'face service > ', '\033[1;32m ' + 'started !' + ' \033[0m'
-
+    while True:
+        params = pip_service.recv()
+        print 'face service > work >', '\033[1;32m request  ' + str(params) + ' \033[0m'
+        pip_service.send({"code": 200 , "id":params["id"]})
 
 # 单图像计算特征
 @app.route('/singlefeature')
@@ -61,7 +64,9 @@ def buildIndex():
 def query():
     id = request.values.get("group_id")
     image_path = request.values.get("image_path")
-    return Response(json.dumps({"id":id,"image_path":image_path, "haha":"haha"}),mimetype='application/json')
+    pip_app.send({"id": id})
+    result = pip_app.recv()
+    return Response(json.dumps(result),mimetype='application/json')
 
 # http server progress, port = 4003
 def webService():
