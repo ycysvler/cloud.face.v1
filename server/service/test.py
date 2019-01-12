@@ -35,13 +35,12 @@ def test1():
 def mongo():
     faces = mongodb.db('').faces.find({'status': 0})
     for face in faces:
-        if face == None:
-            print 'face service > work >', '\033[1;31m id [' + str(face["_id"]) + '] is missing !\033[0m'
-            imagepath = './temp/' + face['_id'] + '.jpg'
-            file = open(imagepath, 'wb')
-            file.write(face['source'])
-            file.close()
-            #im = cv2.imread(imagepath)
+        print 'face service > work >', '\033[1;31m id [' + str(face["_id"]) + '] is missing !\033[0m'
+        imagepath = './temp/' + face['_id'] + '.jpg'
+        file = open(imagepath, 'wb')
+        file.write(face['source'])
+        file.close()
+        #im = cv2.imread(imagepath)
 
 
 if __name__ == '__main__':
