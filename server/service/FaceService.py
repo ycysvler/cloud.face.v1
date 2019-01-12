@@ -35,7 +35,7 @@ pip_app, pip_service = Pipe()
 def singleFeature(params, detector , net):
     face = mongodb.db('').faces.find_one({'_id': ObjectId(params["face_id"])})
     if face != None:
-        print 'face service > work >', '\033[1;31m id [' + str(params["face_id"]) + '] is missing !\033[0m'
+        print 'single feature >', '\033[1;32m response ' + str(params["face_id"]) + ' \033[0m'
         imagepath = writeImage(face["source"], str(face["_id"]) + ".jpg")
         # 计算特征
         code, feature = getFeature(imagepath, detector, net)
@@ -48,6 +48,7 @@ def singleFeature(params, detector , net):
             mongodb.db('').faces.update({'_id': face["_id"]}, {'$set': {'status': -2}})
             return {"code": 500, "face_id": params["face_id"]}
     else:
+        print 'single feature >', '\033[1;31m id [' + str(params["face_id"]) + '] is missing !\033[0m'
         return {"code": 404, "face_id": params["face_id"]}
 
 def batchFeature(params, detector , net):
@@ -67,6 +68,15 @@ def batchFeature(params, detector , net):
     return {"code": 200, "group_id": params["group_id"]}
 
 def buildIndex(params, detector , net):
+    faces = mongodb.db('').faces.find({"group_id": params["group_id"], "status": 1})
+    index = 0
+    features = []
+    for face in faces:
+        features.append(face["feature"])
+        mongodb.db('').faces.update({'_id': face["_id"]}, {'$set': {'group_index':index}})
+        index = index + 1
+    net.buildRetrievalDatabase(features, "index/" + params["group_id"])
+
     return {"code": 200, "group_id": params["group_id"]}
 
 def query(params, detector , net):
