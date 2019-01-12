@@ -25,8 +25,18 @@ from IFaceRetrieval import FaceRetrieval
 from multiprocessing import Process, Pipe
 from flask import Flask,request ,Response
 
+model_dir = "/root/faceRetrieval/models"
+detector = IFaceZoneDetect(model_dir, 0)
+net = FaceRetrieval(model_dir)
+
 # http server
 app = Flask(__name__)
+
+pip_app, pip_service = Pipe()
+
+def startService():
+    print 'face service > ', '\033[1;32m ' + 'started !' + ' \033[0m'
+
 
 # 单图像计算特征
 @app.route('/singlefeature')
@@ -62,3 +72,6 @@ if __name__ == '__main__':
 # 启动计算集成等待努力工作
     webProcess = Process(target=webService)
     webProcess.start()
+
+    servicerocess = Process(target=startService)
+    servicerocess.start()
