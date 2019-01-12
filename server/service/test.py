@@ -36,7 +36,7 @@ def mongo():
     faces = mongodb.db('').faces.find({'status': 0})
     for face in faces:
         print 'face service > work >', '\033[1;31m id [' + str(face["_id"]) + '] is missing !\033[0m'
-        imagepath = './temp/' + str(face['_id']) + '.jpg'
+        imagepath = 'temp/' + str(face['_id']) + '.jpg'
         file = open(imagepath, 'wb')
         file.write(face['source'])
         file.close()
