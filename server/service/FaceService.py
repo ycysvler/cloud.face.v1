@@ -90,7 +90,7 @@ def startService():
         if params["type"] == "singlefeature":
             result = singleFeature(params)
         if params["type"] == "batchfeature":
-            result = singleFeature(params)
+            result = batchFeature(params)
         if params["type"] == "buildindex":
             result = buildIndex(params)
         if params["type"] == "query":
