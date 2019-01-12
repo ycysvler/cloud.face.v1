@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     if (len(boxes) == len(points)):
         im_temp = IFaceZoneDetect.get_align_face(detector, im, boxes[0], points[0])
-        cv2.write("./001.jpg", im_temp)
+        cv2.write("/root/001.jpg", im_temp)
 
 
 
