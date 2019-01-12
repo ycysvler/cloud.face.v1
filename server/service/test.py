@@ -14,14 +14,7 @@ from bson.objectid import ObjectId
 from IFaceDetect import IFaceZoneDetect
 from IFaceRetrieval import FaceRetrieval
 
-
-if __name__ == '__main__':
-    faces = mongodb.db('').faces.find({'status': 0})
-    for face in faces:
-        print face['_id']
-
-    return 0
-
+def test1():
     model_dir = "/root/faceRetrieval/models"
     detector = IFaceZoneDetect(model_dir, 0)
     net = FaceRetrieval(model_dir)
@@ -38,6 +31,14 @@ if __name__ == '__main__':
         cv2.imwrite("/root/002.jpg", im_temp)
         res = net.extractFeature(im_temp)
         print res
+
+if __name__ == '__main__':
+    faces = mongodb.db('').faces.find({'status': 0})
+    for face in faces:
+        print face['_id']
+
+
+
 
 
 
