@@ -41,7 +41,7 @@ def batchFeature(params, detector , net):
         print 'batch feature > ', '\033[1;32m ' + str(face["_id"]) + ' \033[0m'
         imagepath = writeImage(face["source"], str(face["_id"]) + ".jpg")
         # 计算特征
-        code, feature = getFeature(imagepath)
+        code, feature = getFeature(imagepath, detector , net)
         # 删除临时图片
         os.remove(imagepath)
         if code > 0:
