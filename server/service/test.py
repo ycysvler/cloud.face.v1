@@ -4,7 +4,7 @@ import sys
 import os
 import cv2
 sys.path.append("/root/faceRetrieval")
-from FaceRetrieval import IFaceZoneDetect
+from IFaceZoneDetect import FaceRetrieval
 
 if __name__ == '__main__':
     model_dir = "./models"
