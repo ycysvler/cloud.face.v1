@@ -8,5 +8,5 @@ def db(name):
     if(name == 'config'):
         return conn[name]
     else:
-        return conn['facedb']
+        return conn['cloud_facedb']
 

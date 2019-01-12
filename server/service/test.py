@@ -1,13 +1,24 @@
 #coding=utf-8
 # -*- coding: UTF-8 -*-
-import sys
 import os
+import sys
 import cv2
+import time
+import config
+import mongodb
+import bson.binary
+
 sys.path.append("/root/faceRetrieval")
+
+from bson.objectid import ObjectId
 from IFaceDetect import IFaceZoneDetect
 from IFaceRetrieval import FaceRetrieval
 
+
 if __name__ == '__main__':
+    faces = mongodb.db('').faces.find({'status': 0})
+    for face in faces:
+        print face['_id']
     model_dir = "/root/faceRetrieval/models"
     detector = IFaceZoneDetect(model_dir, 0)
     net = FaceRetrieval(model_dir)
