@@ -19,6 +19,9 @@ if __name__ == '__main__':
     faces = mongodb.db('').faces.find({'status': 0})
     for face in faces:
         print face['_id']
+
+    return 0
+
     model_dir = "/root/faceRetrieval/models"
     detector = IFaceZoneDetect(model_dir, 0)
     net = FaceRetrieval(model_dir)
