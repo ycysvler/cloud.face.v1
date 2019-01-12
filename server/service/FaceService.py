@@ -26,18 +26,16 @@ from multiprocessing import Process, Pipe
 from flask import Flask,request ,Response
 
 model_dir = "/root/faceRetrieval/models"
-detector = None
-net = None
 
 # http server
 app = Flask(__name__)
 
 pip_app, pip_service = Pipe()
 
-def singleFeature(params):
+def singleFeature(params, detector , net):
     return {"code":200, "face_id":params["face_id"]}
 
-def batchFeature(params):
+def batchFeature(params, detector , net):
     faces = mongodb.db('').faces.find({"group_id": params["group_id"],"status": 0})
     for face in faces:
         print 'batch feature > ', '\033[1;32m ' + str(face["_id"]) + ' \033[0m'
@@ -70,7 +68,7 @@ def writeImage(bytes, name):
 # 给一个图片，获取特征
 # 返回值 code : 0 计算失败 1 计算成功
 # 返回值 feature : 特征
-def getFeature(picPath):
+def getFeature(picPath, detector , net):
     code = 0
     feature = None
     im = cv2.imread(picPath)
@@ -92,7 +90,7 @@ def startService():
         if params["type"] == "singlefeature":
             result = singleFeature(params)
         if params["type"] == "batchfeature":
-            result = batchFeature(params)
+            result = batchFeature(params, detector , net)
         if params["type"] == "buildindex":
             result = buildIndex(params)
         if params["type"] == "query":
