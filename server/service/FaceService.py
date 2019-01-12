@@ -12,18 +12,18 @@ import argparse
 import datetime
 import bson.binary
 
-from bson.objectid import ObjectId
-from IFaceDetect import IFaceZoneDetect
-from IFaceRetrieval import FaceRetrieval
-from multiprocessing import Process, Pipe
-from flask import Flask,request ,Response
-
 # 扩展加载路径
 sys.path.append("./dll")
 sys.path.append("/root/faceRetrieval")
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
+from bson.objectid import ObjectId
+from IFaceDetect import IFaceZoneDetect
+from IFaceRetrieval import FaceRetrieval
+from multiprocessing import Process, Pipe
+from flask import Flask,request ,Response
 
 # http server
 app = Flask(__name__)
