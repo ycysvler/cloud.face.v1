@@ -33,7 +33,20 @@ app = Flask(__name__)
 pip_app, pip_service = Pipe()
 
 def singleFeature(params, detector , net):
-    return {"code":200, "face_id":params["face_id"]}
+    face = mongodb.db('').faces.find_one({'_id': ObjectId(params["face_id"])})
+    if face == None:
+        print 'face service > work >', '\033[1;31m id [' + str(params["face_id"]) + '] is missing !\033[0m'
+        imagepath = writeImage(face["source"], str(face["_id"]) + ".jpg")
+        # 计算特征
+        code, feature = getFeature(imagepath, detector, net)
+        # 删除临时图片
+        os.remove(imagepath)
+        if code > 0:
+            mongodb.db('').faces.update({'_id': face["_id"]}, {'$set': {'status': 1, 'feature': feature}})
+            return {"code": 200, "face_id": params["face_id"]}
+        else:
+            mongodb.db('').faces.update({'_id': face["_id"]}, {'$set': {'status': -2}})
+            return {"code": 500, "face_id": params["face_id"]}
 
 def batchFeature(params, detector , net):
     faces = mongodb.db('').faces.find({"group_id": params["group_id"],"status": 0})
