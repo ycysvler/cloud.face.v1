@@ -38,6 +38,19 @@ def singleFeature(params):
     return {"code":200, "face_id":params["face_id"]}
 
 def batchFeature(params):
+    faces = mongodb.db('').faces.find({"group_id": params["group_id"],"status": 0})
+    for face in faces:
+        print 'batch feature > ', '\033[1;32m ' + str(face["_id"]) + ' \033[0m'
+        imagepath = writeImage(face["source"], str(face["_id"]) + ".jpg")
+        # 计算特征
+        code, feature = getFeature(imagepath)
+        # 删除临时图片
+        os.remove(imagepath)
+        if code > 0:
+            mongodb.db('').faces.update({'_id': face["_id"]}, {'$set': {'status': 1, 'feature': feature}})
+        else:
+            mongodb.db('').faces.update({'_id': face["_id"]}, {'$set': {'status': -2}})
+
     return {"code": 200, "group_id": params["group_id"]}
 
 def buildIndex(params):
@@ -45,6 +58,28 @@ def buildIndex(params):
 
 def query(params):
     return {"code": 200, "group_id": params["group_id"]}
+
+def writeImage(bytes, name):
+    # 图片路径
+    imagepath = 'temp/' + name
+    file = open(imagepath, 'wb')
+    file.write(bytes)
+    file.close()
+    return imagepath
+
+# 给一个图片，获取特征
+# 返回值 code : 0 计算失败 1 计算成功
+# 返回值 feature : 特征
+def getFeature(picPath):
+    code = 0
+    feature = None
+    im = cv2.imread(picPath)
+    boxes, points = detector.detect(im)
+    if(len(boxes) == len(points)):
+        im_temp = IFaceZoneDetect.get_align_face(detector, im, boxes[0], points[0])
+        feature = net.extractFeature(im_temp)
+        code = 1
+    return code, feature
 
 # 後臺服務
 def startService():
