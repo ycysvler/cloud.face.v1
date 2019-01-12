@@ -5,10 +5,13 @@ import os
 import cv2
 sys.path.append("/root/faceRetrieval")
 from IFaceDetect import IFaceZoneDetect
+from IFaceRetrieval import FaceRetrieval
 
 if __name__ == '__main__':
     model_dir = "/root/faceRetrieval/models"
     detector = IFaceZoneDetect(model_dir, 0)
+    net = FaceRetrieval(model_dir)
+
     pic_dir = "/root/pic/"
     picname = "102_0_783-160-856-233_5329.jpg"
     im = cv2.imread(pic_dir + picname)
@@ -19,6 +22,8 @@ if __name__ == '__main__':
     if (len(boxes) == len(points)):
         im_temp = IFaceZoneDetect.get_align_face(detector, im, boxes[0], points[0])
         cv2.imwrite("/root/002.jpg", im_temp)
+        res = net.extractFeature(im_temp)
+        print res
 
 
 
