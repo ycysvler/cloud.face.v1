@@ -4,15 +4,21 @@ import os
 import sys
 import cv2
 import time
+import json
 import config
+import urllib
 import mongodb
+import argparse
+import datetime
 import bson.binary
 
-sys.path.append("/root/faceRetrieval")
+
 
 from bson.objectid import ObjectId
 from IFaceDetect import IFaceZoneDetect
 from IFaceRetrieval import FaceRetrieval
+from multiprocessing import Process, Pipe
+from flask import Flask,request ,Response
 
 model_dir = "/root/faceRetrieval/models"
 detector = IFaceZoneDetect(model_dir, 0)
