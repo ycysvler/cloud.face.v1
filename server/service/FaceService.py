@@ -26,8 +26,8 @@ from multiprocessing import Process, Pipe
 from flask import Flask,request ,Response
 
 model_dir = "/root/faceRetrieval/models"
-detector = IFaceZoneDetect(model_dir, 0)
-net = FaceRetrieval(model_dir)
+detector = None
+net = None
 
 # http server
 app = Flask(__name__)
@@ -84,6 +84,8 @@ def getFeature(picPath):
 # 後臺服務
 def startService():
     print 'face service > ', '\033[1;32m ' + 'started !' + ' \033[0m'
+    detector = IFaceZoneDetect(model_dir, 0)
+    net = FaceRetrieval(model_dir)
     while True:
         params = pip_service.recv()
         print 'face service > work >', '\033[1;32m request  ' + str(params) + ' \033[0m'
