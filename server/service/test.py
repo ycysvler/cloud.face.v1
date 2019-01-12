@@ -7,7 +7,7 @@ sys.path.append("/root/faceRetrieval")
 from IFaceDetect import IFaceZoneDetect
 
 if __name__ == '__main__':
-    model_dir = "./models"
+    model_dir = "/root/faceRetrieval/models"
     detector = IFaceZoneDetect(model_dir, 0)
     pic_dir = "/root/pic/"
     picname = pic_dir + "102_0_783-160-856-233_5329.jpg"
