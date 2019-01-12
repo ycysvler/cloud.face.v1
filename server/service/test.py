@@ -14,6 +14,10 @@ from bson.objectid import ObjectId
 from IFaceDetect import IFaceZoneDetect
 from IFaceRetrieval import FaceRetrieval
 
+model_dir = "/root/faceRetrieval/models"
+detector = IFaceZoneDetect(model_dir, 0)
+net = FaceRetrieval(model_dir)
+
 def test1():
     model_dir = "/root/faceRetrieval/models"
     detector = IFaceZoneDetect(model_dir, 0)
@@ -32,6 +36,17 @@ def test1():
         res = net.extractFeature(im_temp)
         print res
 
+def getFeature(picPath):
+    code = 0
+    feature = None
+    im = cv2.imread(picPath)
+    boxes, points = detector.detect(im)
+    if(len(boxes) == len(points)):
+        im_temp = IFaceZoneDetect.get_align_face(detector, im, boxes[0], points[0])
+        feature = net.extractFeature(im_temp)
+        code = 1
+    return code, feature
+
 def mongo():
     faces = mongodb.db('').faces.find({'status': 0})
     for face in faces:
@@ -40,7 +55,13 @@ def mongo():
         file = open(imagepath, 'wb')
         file.write(face['source'])
         file.close()
-        #im = cv2.imread(imagepath)
+        code,feature = getFeature(imagepath)
+
+        # delete file
+        os.remove(imagepath)
+
+        if code > 0:
+            print feature
 
 
 if __name__ == '__main__':
