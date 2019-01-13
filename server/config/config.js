@@ -22,7 +22,7 @@ module.exports = {
             port: 4001                          // 服务启动端口号
         },
         service: {
-            uri: 'http://192.168.31.34:4003',   // python service 地址
+            uri: 'http://localhost:4003',   // python service 地址
         }
     }
 };

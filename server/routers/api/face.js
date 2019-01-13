@@ -53,7 +53,7 @@ module.exports = function (router) {
             // 计算图片特征, python 那边计算特征
             let options = {
                 method: 'get',
-                url: `${Config.server.service.uri}/image?id=${data['_id']}`,
+                url: `${Config.server.service.uri}/singlefeature?face_id=${data['_id']}`,
                 json: true,
                 headers: {
                     "content-type": "application/json",

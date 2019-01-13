@@ -16,6 +16,7 @@ from SVideo import VideoService
 from SJob import JobService
 from multiprocessing import Process, Pipe
 sys.path.append("./dll")
+sys.path.append("/root/faceRetrieval")
 
 reload(sys)
 sys.setdefaultencoding('utf-8') 

@@ -12,7 +12,7 @@ import argparse
 import datetime
 import bson.binary
 
-
+sys.path.append("/root/faceRetrieval")
 
 from bson.objectid import ObjectId
 from IFaceDetect import IFaceZoneDetect
