@@ -14,6 +14,54 @@ const logic = new FaceLogic();
 
 module.exports = function (router) {
 
+// 人脸搜索
+    router.post('/search', async (ctx) => {
+        let ok = tools.required(ctx, ["group_id"]);
+        if (ok) {
+            let error_code = 0;
+            let data = null;
+            let error_msg = null;
+
+            let group_id = ctx.request.query['group_id'];
+
+            console.log(`path :\t\x1B[33m/search \t \x1B[0m \x1B[36m { group_id : ${group_id} } \x1B[0m`);
+
+            let serverFilePath = path.join(__dirname, '../../public');
+
+            // 上传文件事件
+            let f = await uploadFile(ctx, {
+                fileType: 'images',          // 上传之后的目录
+                path: serverFilePath
+            });
+
+
+
+            // 计算图片特征, python 那边计算特征
+            let options = {
+                method: 'get',
+                url: `${Config.server.service.uri}/query?group_id=${group_id}&image_path=${f.path}`,
+                json: true,
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: {}
+            };
+
+            request(options, function (err, res, body) {
+                // 删掉上传的临时文件
+                fs.unlink(f.path,()=>{});
+
+                if (err) {
+                    console.log(err);
+                    ctx.body = {error_code: 500, err};
+                }else{
+                    console.log(body);
+                    ctx.body = {error_code: 0, data: body};
+                }
+            });
+        }
+    });
+
     // 添加人脸
     router.post('/faceset/face/add', async (ctx) => {
         let ok = tools.required(ctx, ["group_id", "user_id"]);
