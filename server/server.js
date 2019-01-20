@@ -38,14 +38,14 @@ app.use(koastatic(path.join(__dirname, './public')));       // 处理静态资�
 app.use(bodyparser());                                      // 使用ctx.body解析中间件
 app.use(consuming);                                         // 计算耗时中间件
 
-let index = new Router();
-index.get('/', async(ctx)=>{
-    let ip = tools.getIps();
-    await ctx.render('index',{title:'ttt', localip:ip});
-});
-
+// let index = new Router();
+// index.get('/', async(ctx)=>{
+//     let ip = tools.getIps();
+//     await ctx.render('index',{title:'ttt', localip:ip});
+// });
+//root.use("/index", index.routes(), index.allowedMethods());
 const root = loader(path.join(__dirname, './routers/api'), '/rest/face/v3');
-root.use("/index", index.routes(), index.allowedMethods());
+
 
 app.use(root.routes()).use(root.allowedMethods());          // 加载路由
 
