@@ -43,6 +43,7 @@ def singleFeature(params, detector , net):
         os.remove(imagepath)
         if code > 0:
             mongodb.db('').faces.update({'_id': face["_id"]}, {'$set': {'status': 1, 'feature': feature}})
+            print feature
             return {"code": 200, "face_id": params["face_id"]}
         else:
             mongodb.db('').faces.update({'_id': face["_id"]}, {'$set': {'status': -2}})
