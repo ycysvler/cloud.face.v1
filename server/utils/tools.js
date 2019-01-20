@@ -24,7 +24,7 @@ class tools {
             console.log('p', JSON.stringify(p));
             for(let i of p){
                 console.log('i', JSON.stringify(i));
-                if(i.family === 'IPV4' && i.address !== '127.0.0.1'){
+                if(i.family === 'IPv4' && i.address !== '127.0.0.1'){
                     return i.address;
                 }
             }
