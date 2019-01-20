@@ -17,9 +17,13 @@ class tools {
     getIps(){
         //return "127.0.0.1";
         let ips = os.networkInterfaces();
+        console.log('ips', JSON.stringify(ips));
         for(let key in ips){
+            console.log('key', key);
             let p = ips[key];
+            console.log('p', JSON.stringify(p));
             for(let i of p){
+                console.log('i', JSON.stringify(i));
                 if(i.family === 'IPV4' && i.address !== '127.0.0.1'){
                     return i.address;
                 }
