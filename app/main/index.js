@@ -32,7 +32,7 @@ export default class CentrePlatform extends React.Component {
                                         <Menu.Item key="monitor"><Link to='/main/video'><span>视频库</span></Link></Menu.Item>
                                     </SubMenu>
                                     <SubMenu key="sub1" title={<span><Icon type="appstore-o" /><span>人脸库管理</span></span>}>
-                                        <Menu.Item key="org"><Link to='/main/facegroup'><span>分组库</span></Link></Menu.Item>
+                                        <Menu.Item key="org"><Link to='/main'><span>分组库</span></Link></Menu.Item>
                                     </SubMenu>
                                 </Menu>
                             </Content>
