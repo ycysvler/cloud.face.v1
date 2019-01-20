@@ -17,7 +17,22 @@ class tools {
     getIps(){
         //return "127.0.0.1";
 
+        for(let p of os.networkInterfaces()){
+            for(let i of p){
+                if(i.family === 'IPV4' && i.address !== '127.0.0.1'){
+                    return i.address;
+                }
+            }
+        }
+        return "";
+
         let IPv4s = [];
+        let ent0 = os.networkInterfaces().en0 ? os.networkInterfaces().en0 : os.networkInterfaces().eth0;
+
+        ent0 = ent0 ? ent0 : os.networkInterfaces().en1;
+
+        ent0 = ent0 ? ent0 : os.networkInterfaces().eth1;
+
         let en0 = os.networkInterfaces().en0 ? os.networkInterfaces().en0:os.networkInterfaces().eth0;
         for(let item of en0){
             if(item.family === 'IPv4')
