@@ -39,6 +39,7 @@ const loader = function (loadPath) {                    // 加载一个目录
 module.exports = (routerpath, routerbase)=>{
     let root = new Router();
     let r_api = loader(path.join(routerpath));       // 加载 routers/api 下文件
+
     root.use(routerbase, r_api.routes(), r_api.allowedMethods());
     return root;
 };

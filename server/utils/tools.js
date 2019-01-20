@@ -15,6 +15,8 @@ class tools {
     * 获取本机IP地址
     * */
     getIps(){
+        return "127.0.0.1";
+
         let IPv4s = [];
         let en0 = os.networkInterfaces().en0 ? os.networkInterfaces().en0:os.networkInterfaces().eth0;
         for(let item of en0){

@@ -2,6 +2,8 @@ import Reflux from 'reflux';
 import Config from 'config';
 import propx from '../http/proxy';
 
+Config.server = window.server;
+
 const UserActions = Reflux.createActions([
         'list',
         'add',

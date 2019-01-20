@@ -15,8 +15,10 @@ const consuming = require('./middleware/consuming');        // 加载计算耗�
 const config = require('./config/config');                  // 加载配置文件
 const logger = require('./utils/logger');                   // 引用日志组建
 const loader = require('./utils/loader');                   // 路由加载器
+const tools = require('./utils/tools');                     // 工具类
 const app = new Koa();                                      // 创建koa实例化
 const log = logger('face.api');                             // 日志
+const Router = require('koa-router');                       // 引用路由模块
 
 // app.use(async (ctx, next) => {                           // 打一条屏显，活跃下气氛
 //     console.log(`${moment().format()} ${ctx.request.method} ${ctx.request.url}`);
@@ -36,7 +38,15 @@ app.use(koastatic(path.join(__dirname, './public')));       // 处理静态资�
 app.use(bodyparser());                                      // 使用ctx.body解析中间件
 app.use(consuming);                                         // 计算耗时中间件
 
+let index = new Router();
+index.get('/', async(ctx)=>{
+    let ip = tools.getIps();
+    await ctx.render('index',{title:'ttt', localip:ip});
+});
+
 const root = loader(path.join(__dirname, './routers/api'), '/rest/face/v3');
+root.use("/index", index.routes(), index.allowedMethods());
+
 app.use(root.routes()).use(root.allowedMethods());          // 加载路由
 
 let server = app.listen(config.server.face.port);           // 启动http服务
