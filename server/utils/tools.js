@@ -16,8 +16,9 @@ class tools {
     * */
     getIps(){
         //return "127.0.0.1";
-
-        for(let p of os.networkInterfaces()){
+        let ips = os.networkInterfaces();
+        for(let key in ips){
+            let p = ips[key];
             for(let i of p){
                 if(i.family === 'IPV4' && i.address !== '127.0.0.1'){
                     return i.address;
