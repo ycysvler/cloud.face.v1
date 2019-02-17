@@ -23,7 +23,6 @@ export default class FaceQuery extends React.Component {
     }
 
     componentDidMount() {
-        FaceActions.list(this.state.group_id, this.state.user_id);
     }
 
     componentWillUnmount() {
@@ -31,12 +30,6 @@ export default class FaceQuery extends React.Component {
     }
 
     onStatusChange = (type, data) => {
-        if (type === 'list') {
-            this.setState({items: data.list, deleteBtnEnable: false, total: data.total});
-        }
-        if (type === 'delete') {
-            FaceActions.list(this.state.group_id, this.state.user_id);
-        }
     };
 
     // 显示添加组的弹窗
@@ -54,10 +47,8 @@ export default class FaceQuery extends React.Component {
     };
     // 上传图片
     uploadChange = (e) => {
-        console.log(e);
-
         // 隐藏弹窗
-        this.setState({visible: false});
+        this.setState({items:e.data.result, visible: false});
     };
 
     onRemoveFace=(face_token)=>{
@@ -86,16 +77,14 @@ export default class FaceQuery extends React.Component {
                         <div style={{display: 'flex', flexWrap: 'wrap', background:'#fbfbfb', padding:8}}>
                             {
                                 this.state.items.map((item, index) => {
-                                    return <div className="face-item" key={item.face_token}>
-
+                                    return <div className="face-item" key={item}>
                                         <img style={{
                                             height: 180,
                                             borderRadius: 5,
                                             border: 'solid 1px #eee'
                                         }}
-                                             src={`${Config.server}/rest/face/v3/faceset/face/source/${item.face_token}`}
+                                             src={`${Config.server}/rest/face/v3/faceset/face/gsource/${this.state.group_id}/${item}`}
                                         ></img >
-                                        <Icon type="delete" onClick={this.onRemoveFace.bind(this, item.face_token)} theme="filled" className="delete"  />
                                     </div>
                                 })
                             }

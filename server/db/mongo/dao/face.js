@@ -52,6 +52,19 @@ module.exports = class FaceLogic {
         });
     }
 
+    index(group_id, index){
+        return new Promise((resolve, reject) => {
+            let doc = getMongoPool().Face;
+            doc.findOne({"group_id":group_id, "group_index":index}).exec(function (err, Item) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(Item);
+                }
+            });
+        });
+    }
+
     remove(face_token) {
         return new Promise((resolve, reject) => {
             let doc = getMongoPool().Face;

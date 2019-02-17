@@ -48,25 +48,7 @@ module.exports = function (router) {
 
             let r = await requestEx(options);
 
-            console.log('r', r);
-
             ctx.body = {error_code: 0, data: r};
-
-
-            // request(options, function (err, res, body) {
-            //     // 删掉上传的临时文件
-            //     //fs.unlink(f.path,()=>{});
-            //
-            //
-            //     if (err) {
-            //         console.log(err);
-            //         ctx.body = {error_code: 500, err};
-            //     }else{
-            //         console.log(body);
-            //
-            //     }
-            // });
-
         }
     });
 
@@ -161,6 +143,18 @@ module.exports = function (router) {
             console.log(`path :\t\x1B[33m/catalog/source/:id \t \x1B[0m \x1B[36m { id : ${id} }\x1B[0m`);
 
             let item = await logic.single(id);
+            ctx.body = item.source;
+        }
+    });
+
+    router.get('/faceset/face/gsource/:group_id/:index', async (ctx) => {
+        let ok = tools.required(ctx, ['group_id','index']);
+        if (ok) {
+            let group_id = ctx.params.group_id;
+            let index = ctx.params.index;
+            console.log(`path :\t\x1B[33m/catalog/source/:id \t \x1B[0m \x1B[36m { group_id : ${group_id} }\x1B[0m`);
+
+            let item = await logic.index(group_id, index);
             ctx.body = item.source;
         }
     });
