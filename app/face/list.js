@@ -55,7 +55,8 @@ export default class FaceList extends React.Component {
     };
     // 上传图片
     uploadChange = (e) => {
-        console.log(e);
+        // 刷新列表
+        FaceActions.list(this.state.group_id, this.state.user_id);
         // 隐藏弹窗
         this.setState({visible: false});
     };

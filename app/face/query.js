@@ -53,9 +53,9 @@ export default class FaceQuery extends React.Component {
         });
     };
     // 上传图片
-    uploadChange = () => {
-        // 刷新列表
-        FaceActions.list(this.state.group_id, this.state.user_id);
+    uploadChange = (e) => {
+        console.log(e);
+
         // 隐藏弹窗
         this.setState({visible: false});
     };

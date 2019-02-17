@@ -15,7 +15,7 @@ const logic = new FaceLogic();
 module.exports = function (router) {
 
 // 人脸搜索
-    router.post('/search', async (ctx) => {
+    router.post('/faceset/face/search', async (ctx) => {
         let ok = tools.required(ctx, ["group_id"]);
         if (ok) {
             let error_code = 0;
