@@ -121,7 +121,7 @@ export default class FaceList extends React.Component {
                                 <Col span={24}>
                                     <Upload
                                         showUploadList={false}
-                                        action={Config.server + `/rest/face/v3/faceset/face/search?group_id=${this.state.group_id}`}
+                                        action={Config.server + `/rest/face/v3/faceset/face/add?group_id=${this.state.group_id}&user_id=${this.state.user_id}`}
                                         listType="picture-card"
                                         onChange={this.uploadChange}
                                     >
