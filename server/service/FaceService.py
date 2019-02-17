@@ -172,6 +172,9 @@ def restQuery():
     count = request.values.get("count")
     if count == None:
         count = 1
+
+    print 'query >', '\033[1;32m group_id:' + group_id + 'image_path:' + image_path + 'count:' +count+' \033[0m'
+
     pip_app.send({"type":"query", "group_id": group_id, "image_path":image_path, "count":count})
     result = pip_app.recv()
     return Response(json.dumps(result),mimetype='application/json')

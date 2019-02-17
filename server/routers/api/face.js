@@ -34,8 +34,6 @@ module.exports = function (router) {
                 path: serverFilePath
             });
 
-
-
             // 计算图片特征, python 那边计算特征
             let options = {
                 method: 'get',
@@ -49,7 +47,7 @@ module.exports = function (router) {
 
             request(options, function (err, res, body) {
                 // 删掉上传的临时文件
-                fs.unlink(f.path,()=>{});
+                //fs.unlink(f.path,()=>{});
 
                 if (err) {
                     console.log(err);
@@ -59,6 +57,10 @@ module.exports = function (router) {
                     ctx.body = {error_code: 0, data: body};
                 }
             });
+
+            ctx.body = error_code ?
+                {error_code: error_code, error_msg} :
+                {error_code: error_code, data: f.path};
         }
     });
 
