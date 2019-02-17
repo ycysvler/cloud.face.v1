@@ -175,7 +175,6 @@ def restQuery():
 
     print 'query >', '\033[1;32m group_id:' + group_id +' \033[0m'
     print 'query >', '\033[1;32m image_path:' + image_path +' \033[0m'
-    print 'query >', '\033[1;32m count:' + count +' \033[0m'
 
     pip_app.send({"type":"query", "group_id": group_id, "image_path":image_path, "count":count})
     result = pip_app.recv()
