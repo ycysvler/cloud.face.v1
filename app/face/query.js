@@ -49,7 +49,7 @@ export default class FaceQuery extends React.Component {
     uploadChange = (e) => {
         console.log('r',e);
         // 隐藏弹窗
-        this.setState({items:e.data.result, visible: false});
+        this.setState({items:e.file.response.data.result, visible: false});
     };
 
     onRemoveFace=(face_token)=>{
