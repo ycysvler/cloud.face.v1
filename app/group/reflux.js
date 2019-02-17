@@ -2,12 +2,11 @@ import Reflux from 'reflux';
 import Config from 'config';
 import propx from '../http/proxy';
 
-Config.server = window.server;
-
 const FaceActions = Reflux.createActions([
         'list',
         'add',
-        'delete'
+        'delete',
+        'buildindex'
     ]
 );
 
@@ -32,6 +31,17 @@ const FaceStore = Reflux.createStore({
             }
 
             self.trigger('list', {total: self.items.length, list: self.items, param: param});
+        });
+    },
+
+    onBuildindex:function(group_id){
+        let self = this;
+        let url = Config.server + "/rest/face/v3/faceset/group/buildindex";
+
+        let param = {group_id:group_id};
+
+        propx.post(url, param, (code, data) => {
+            self.trigger('buildindex', {data:data, param: param});
         });
     },
 

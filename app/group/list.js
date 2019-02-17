@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {Layout,  Modal, Table, Breadcrumb, Button, Row, Col, Input} from 'antd';
+import {Layout, Modal, Table, Breadcrumb, Button, Row, Col, Input} from 'antd';
 import {FaceStore, FaceActions} from './reflux.js';
 const {Header, Content} = Layout;
 
@@ -44,7 +44,9 @@ export default class FaceGroupList extends React.Component {
         {
             title: '编号',
             dataIndex: 'group_id',
-            render: (text) => {return <Link to={"/main/user/" + text} >{text}</Link>},
+            render: (text) => {
+                return <Link to={"/main/user/" + text}>{text}</Link>
+            },
         },
         {
             title: '名称',
@@ -57,7 +59,18 @@ export default class FaceGroupList extends React.Component {
         {
             title: '更新时间',
             dataIndex: 'updatetime',
-        }];
+        },
+        {
+            title:'新人像',
+            dataIndex:'unindex'
+        },
+        {
+            title: "索引",
+            render: (text, record) => {
+                return record.unindex > 0 ? <Button onClick={this.rebuidIndex.bind(this, record)}>更新</Button> : null;
+            }
+        }
+    ];
 
     rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -104,6 +117,13 @@ export default class FaceGroupList extends React.Component {
             visible: false,
         });
     };
+
+    rebuidIndex(record) {
+        console.group(`重建索引`);
+        console.log('record', record);
+        FaceActions.buildindex(record.group_id);
+        console.groupEnd();
+    }
 
     render() {
         return (<Layout>

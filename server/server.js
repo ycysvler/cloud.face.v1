@@ -46,7 +46,7 @@ index.get('/', async(ctx)=>{
 
 
 const root = loader(path.join(__dirname, './routers/api'), '/rest/face/v3');
-root.use("/index", index.routes(), index.allowedMethods());
+//root.use("/index", index.routes(), index.allowedMethods());
 
 app.use(root.routes()).use(root.allowedMethods());          // 加载路由
 
