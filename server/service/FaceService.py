@@ -178,6 +178,7 @@ def restQuery():
 
     pip_app.send({"type":"query", "group_id": group_id, "image_path":image_path, "count":count})
     result = pip_app.recv()
+    print result
     return Response(json.dumps(result),mimetype='application/json')
 
 # http server progress, port = 4003
