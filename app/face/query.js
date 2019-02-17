@@ -9,14 +9,13 @@ import {FaceStore, FaceActions} from './reflux.js';
 import './index.less';
 const {Header, Content} = Layout;
 const {Meta} = Card;
-export default class FaceList extends React.Component {
+export default class FaceQuery extends React.Component {
     constructor(props) {
         super(props);
         this.unsubscribe = FaceStore.listen(this.onStatusChange.bind(this));
         this.state = {
             fileList: [],
-            group_id: props.match.params.group_id,
-            user_id: props.match.params.user_id,
+            group_id: "22",
             items: [],
             deleteBtnEnable: false,
             newItem: {}
@@ -54,8 +53,9 @@ export default class FaceList extends React.Component {
         });
     };
     // 上传图片
-    uploadChange = (e) => {
-        console.log(e);
+    uploadChange = () => {
+        // 刷新列表
+        FaceActions.list(this.state.group_id, this.state.user_id);
         // 隐藏弹窗
         this.setState({visible: false});
     };
@@ -74,17 +74,13 @@ export default class FaceList extends React.Component {
 
         return (<Layout className="face">
                 <Breadcrumb className="breadcrumb">
-                    <Breadcrumb.Item>人像库</Breadcrumb.Item>
-                    <Breadcrumb.Item><Link to={'/main/group/'}>人像库管理</Link></Breadcrumb.Item>
-                    <Breadcrumb.Item><Link to={'/main/user/' + this.state.group_id}>用户列表</Link></Breadcrumb.Item>
-                    <Breadcrumb.Item>用户人像</Breadcrumb.Item>
+                    <Breadcrumb.Item>人脸检索</Breadcrumb.Item>
+                    <Breadcrumb.Item>检索</Breadcrumb.Item>
                 </Breadcrumb>
 
                 <Layout className="list-content">
                     <Header className="list-header">
-                        <Button type="primary" onClick={this.showModal}>添加人像</Button>
-                        <Button type="primary"
-                                style={{marginLeft: 16}}>批量添加</Button>
+                        <Button type="primary" onClick={this.showModal}>上传人像</Button>
                     </Header>
                     <Content >
                         <div style={{display: 'flex', flexWrap: 'wrap', background:'#fbfbfb', padding:8}}>
@@ -98,7 +94,7 @@ export default class FaceList extends React.Component {
                                             border: 'solid 1px #eee'
                                         }}
                                              src={`${Config.server}/rest/face/v3/faceset/face/source/${item.face_token}`}
-                                             ></img >
+                                        ></img >
                                         <Icon type="delete" onClick={this.onRemoveFace.bind(this, item.face_token)} theme="filled" className="delete"  />
                                     </div>
                                 })
@@ -121,7 +117,7 @@ export default class FaceList extends React.Component {
                                 <Col span={24}>
                                     <Upload
                                         showUploadList={false}
-                                        action={Config.server + `/rest/face/v3/faceset/face/search?group_id=${this.state.group_id}`}
+                                        action={Config.server + `/rest/face/v3/faceset/face/add?group_id=${this.state.group_id}&user_id=${this.state.user_id}`}
                                         listType="picture-card"
                                         onChange={this.uploadChange}
                                     >

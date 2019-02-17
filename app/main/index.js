@@ -7,6 +7,8 @@ import './main.less';
 import GroupList from '../group/list';
 import UserList from '../user/list';
 import FaceList from '../face/list';
+import FaceQuery from '../face/query';
+
 
 const SubMenu = Menu.SubMenu;
 const {Header, Content, Sider} = Layout;
@@ -28,11 +30,11 @@ export default class CentrePlatform extends React.Component {
                         <Layout style={{"background": "white"}}>
                             <Content>
                                 <Menu mode="horizontal" >
-                                    <SubMenu key="sub2" title={<span><Icon type="bulb" /><span>视频库管理</span></span>}>
-                                        <Menu.Item key="monitor"><Link to='/main/video'><span>视频库</span></Link></Menu.Item>
+                                    <SubMenu key="sub1" title={<span><Icon type="appstore-o" /><span>人脸检索</span></span>}>
+                                        <Menu.Item key="query"><Link to='/main/query'><span>人脸检索</span></Link></Menu.Item>
                                     </SubMenu>
-                                    <SubMenu key="sub1" title={<span><Icon type="appstore-o" /><span>人脸库管理</span></span>}>
-                                        <Menu.Item key="org"><Link to='/main'><span>分组库</span></Link></Menu.Item>
+                                    <SubMenu key="sub2" title={<span><Icon type="appstore-o" /><span>人脸库管理</span></span>}>
+                                        <Menu.Item key="main"><Link to='/main'><span>分组库</span></Link></Menu.Item>
                                     </SubMenu>
                                 </Menu>
                             </Content>
@@ -51,6 +53,7 @@ export default class CentrePlatform extends React.Component {
                             <Route path="/main/group"  component={GroupList}/>
                             <Route path="/main/user/:group_id"  component={UserList}/>
                             <Route path="/main/face/:group_id/:user_id"  component={FaceList}/>
+                            <Route path="/main/query"  component={FaceQuery}/>
                             <Route component={NotFound}/>
 
                         </Switch>
