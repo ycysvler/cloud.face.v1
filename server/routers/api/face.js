@@ -48,6 +48,7 @@ module.exports = function (router) {
             request(options, function (err, res, body) {
                 // 删掉上传的临时文件
                 //fs.unlink(f.path,()=>{});
+                console.log('request', err, res, body);
 
                 if (err) {
                     console.log(err);
@@ -58,9 +59,6 @@ module.exports = function (router) {
                 }
             });
 
-            ctx.body = error_code ?
-                {error_code: error_code, error_msg} :
-                {error_code: error_code, data: f.path};
         }
     });
 
