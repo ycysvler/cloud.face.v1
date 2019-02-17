@@ -25,7 +25,7 @@ module.exports = class GroupLogic {
         return new Promise((resolve, reject) => {
             let faces = getMongoPool().Face;
             // 按group分组，计算没建索引的图片数量
-            faces.aggregate([{ $match : { group_index : null } },{$group:{_id:"$group_id", unindex:{$sum:1}}}]).exec((err, faces)=>{
+            faces.aggregate([{ $match : { group_index : null, status:1 } },{$group:{_id:"$group_id", unindex:{$sum:1}}}]).exec((err, faces)=>{
 
                 let doc = getMongoPool().Group;
                 let results = [];
