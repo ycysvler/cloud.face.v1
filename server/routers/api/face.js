@@ -6,6 +6,7 @@ const path = require('path');
 const uuid = require('uuid');
 const moment = require('moment');
 const request = require('request');
+const requestEx = require('../../utils/request');
 const tools = require('../../utils/tools');
 const Config = require('../../config/config');
 const uploadFile = require('../../utils/upload');
@@ -45,19 +46,26 @@ module.exports = function (router) {
                 body: {}
             };
 
-            request(options, function (err, res, body) {
-                // 删掉上传的临时文件
-                //fs.unlink(f.path,()=>{});
+            let r = await requestEx(options);
+
+            console.log('r', r);
+
+            ctx.body = {error_code: 0, data: r};
 
 
-                if (err) {
-                    console.log(err);
-                    ctx.body = {error_code: 500, err};
-                }else{
-                    console.log(body);
-                    ctx.body = {error_code: 0, data: body};
-                }
-            });
+            // request(options, function (err, res, body) {
+            //     // 删掉上传的临时文件
+            //     //fs.unlink(f.path,()=>{});
+            //
+            //
+            //     if (err) {
+            //         console.log(err);
+            //         ctx.body = {error_code: 500, err};
+            //     }else{
+            //         console.log(body);
+            //
+            //     }
+            // });
 
         }
     });
