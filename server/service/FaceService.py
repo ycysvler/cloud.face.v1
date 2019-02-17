@@ -95,7 +95,7 @@ def query(params, detector , net):
             im_temp = IFaceZoneDetect.get_align_face(detector, im, boxes[i], points[i])
             res = net.query(im_temp, 1, retrieval_model_path)
             print res
-            result = result | res
+            result = result + res
 
 
     # 用每一张图去搜索
