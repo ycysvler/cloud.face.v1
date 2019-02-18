@@ -82,9 +82,11 @@ module.exports = function (router) {
             let zipath = path.join(__dirname, '../../public/unarchive')+"";
             fs.createReadStream(f.path).pipe(unzip.Extract({ path:zipath}));
 
-            console.log('zipath', zipath);
-            let pa = fs.readdirSync("D:\\workspace\\seeobject\\cloud\\face\\v1\\src\\cloud.face.v1\\server\\public\\unarchive");
+            console.log('zipath', path.join(__dirname, '../../public/unarchive'));
+            let pa = fs.readdirSync(zipath);
+	    console.log('pa', pa);
             pa.forEach(function(ele,index){
+                console.log('ele', ele, index);
                 let info = fs.statSync(path+"/"+ele)
                 if(info.isDirectory()){
                     console.log("dir: "+ele)
