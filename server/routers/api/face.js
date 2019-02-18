@@ -102,9 +102,6 @@ module.exports = function (router) {
                                     error_code = err.code;
                                     error_msg = err.errmsg;
                                 });
-                                // 删掉上传的临时文件
-                                fs.unlink(image,()=>{});
-
                                 // 计算图片特征, python 那边计算特征
                                 let options = {
                                     method: 'get',
@@ -115,8 +112,10 @@ module.exports = function (router) {
                                     },
                                     body: {}
                                 };
-                                await requestEx(options);
+                                console.log('single feature', await requestEx(options));
                             }
+                            // 删掉上传的临时文件
+                            fs.unlink(image,()=>{});
                         });
                     }else{
                         //console.log("file: "+ele)

@@ -115,7 +115,7 @@ def writeImage(bytes, name):
 def getFeature(picPath, detector , net):
     code = 0
     feature = None
-    try
+    try:
         im = cv2.imread(picPath)
         boxes, points = detector.detect(im)
         if(len(boxes) == len(points)):
