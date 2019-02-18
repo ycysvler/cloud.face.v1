@@ -47,9 +47,11 @@ export default class FaceQuery extends React.Component {
     };
     // 上传图片
     uploadChange = (e) => {
-        console.log('r',e);
-        // 隐藏弹窗
-        this.setState({items:e.file.response.data.result, visible: false});
+        if(e.file.response != null){
+            // 隐藏弹窗
+            this.setState({items:e.file.response.data.result, visible: false});
+        }
+
     };
 
     onRemoveFace=(face_token)=>{

@@ -47,9 +47,16 @@ export default class FaceList extends React.Component {
         });
     };
 
+    showBatchModal = () => {
+        this.setState({
+            batch: true,
+        });
+    };
+
     // 取消添加组的弹窗
     handleCancel = (e) => {
         this.setState({
+            batch:false,
             visible: false,
         });
     };
@@ -84,7 +91,7 @@ export default class FaceList extends React.Component {
                 <Layout className="list-content">
                     <Header className="list-header">
                         <Button type="primary" onClick={this.showModal}>添加人像</Button>
-                        <Button type="primary"
+                        <Button type="primary" onClick={this.showBatchModal}
                                 style={{marginLeft: 16}}>批量添加</Button>
                     </Header>
                     <Content >
@@ -123,6 +130,31 @@ export default class FaceList extends React.Component {
                                     <Upload
                                         showUploadList={false}
                                         action={Config.server + `/rest/face/v3/faceset/face/add?group_id=${this.state.group_id}&user_id=${this.state.user_id}`}
+                                        listType="picture-card"
+                                        onChange={this.uploadChange}
+                                    >
+                                        {uploadButton}
+                                    </Upload>
+                                </Col>
+                            </Row>
+                        </Modal>
+
+                        <Modal
+                            className="modify"
+                            title="上传人像"
+                            width={160}
+                            visible={this.state.batch}
+                            onOk={this.handleOk}
+                            onCancel={this.handleCancel}
+                            footer={null}
+                        >
+
+                            <Row >
+
+                                <Col span={24}>
+                                    <Upload
+                                        showUploadList={false}
+                                        action={Config.server + `/rest/face/v3/faceset/face/batch?group_id=${this.state.group_id}`}
                                         listType="picture-card"
                                         onChange={this.uploadChange}
                                     >
