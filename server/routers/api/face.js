@@ -49,6 +49,7 @@ module.exports = function (router) {
             };
 
             let r = await requestEx(options);
+            fs.unlink(f.path,()=>{});
 
             ctx.body = {error_code: 0, data: r};
         }
@@ -80,21 +81,51 @@ module.exports = function (router) {
             let chunk = fs.readFileSync(f.path);
 
             let zipath = path.join(__dirname, '../../public/unarchive')+"";
-            fs.createReadStream(f.path).pipe(unzip.Extract({ path:zipath}));
+            fs.createReadStream(f.path).pipe(unzip.Extract({ path:zipath})).on('close',()=>{
+                let pa = fs.readdirSync(zipath);
 
-            console.log('zipath', path.join(__dirname, '../../public/unarchive'));
-            let pa = fs.readdirSync(zipath);
-	    console.log('pa', pa);
-            pa.forEach(function(ele,index){
-                console.log('ele', ele, index);
-                let info = fs.statSync(path+"/"+ele)
-                if(info.isDirectory()){
-                    console.log("dir: "+ele)
-                    readDirSync(path+"/"+ele);
-                }else{
-                    console.log("file: "+ele)
-                }
+                pa.forEach(function(dir){
+                    let info = fs.statSync(zipath+"/"+dir);
+                    if(info.isDirectory()){
+                        let files = fs.readdirSync(zipath+"/"+dir);
+                        files.forEach( async (file)=>{
+                            let image = zipath+"/"+dir + "/" + file;
+
+                            if( path.extname(file) === ".jpg" || path.extname(file) === ".png"){
+                                // 文件内容
+                                let chunk = fs.readFileSync(image);
+                                // 消息体
+                                let body = {"user_id":dir, "group_id":group_id, "source":chunk, "status":0 };
+
+                                // 添加数据
+                                let data = await logic.create(body).catch(function (err) {
+                                    error_code = err.code;
+                                    error_msg = err.errmsg;
+                                });
+                                // 删掉上传的临时文件
+                                fs.unlink(image,()=>{});
+
+                                // 计算图片特征, python 那边计算特征
+                                let options = {
+                                    method: 'get',
+                                    url: `${Config.server.service.uri}/singlefeature?face_id=${data['_id']}`,
+                                    json: true,
+                                    headers: {
+                                        "content-type": "application/json",
+                                    },
+                                    body: {}
+                                };
+                                await requestEx(options);
+                            }
+                        });
+                    }else{
+                        //console.log("file: "+ele)
+                    }
+                });
             });
+
+            fs.unlink(f.path,()=>{});
+
 
             // 消息体
             /*
@@ -131,7 +162,7 @@ module.exports = function (router) {
              */
             ctx.body = error_code ?
                 {error_code: error_code, error_msg} :
-                {error_code: error_code, data: {face_token:data._id}};
+                {error_code: error_code, data: {face_token:data}};
         }
     });
 

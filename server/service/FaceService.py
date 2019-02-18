@@ -115,12 +115,17 @@ def writeImage(bytes, name):
 def getFeature(picPath, detector , net):
     code = 0
     feature = None
-    im = cv2.imread(picPath)
-    boxes, points = detector.detect(im)
-    if(len(boxes) == len(points)):
-        im_temp = IFaceZoneDetect.get_align_face(detector, im, boxes[0], points[0])
-        feature = net.extractFeature(im_temp)
-        code = 1
+    try
+        im = cv2.imread(picPath)
+        boxes, points = detector.detect(im)
+        if(len(boxes) == len(points)):
+            im_temp = IFaceZoneDetect.get_align_face(detector, im, boxes[0], points[0])
+            feature = net.extractFeature(im_temp)
+            code = 1
+    except ValueError as e:
+        print e
+    else:
+        print('')
     return code, feature
 
 # 後臺服務
