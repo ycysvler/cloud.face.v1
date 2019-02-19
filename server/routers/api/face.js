@@ -12,11 +12,50 @@ const tools = require('../../utils/tools');
 const Config = require('../../config/config');
 const uploadFile = require('../../utils/upload');
 const FaceLogic = require('../../db/mongo/dao/face');
+const UserLogic = require('../../db/mongo/dao/user');
 
 const logic = new FaceLogic();
+const userLogic = new UserLogic();
 
 module.exports = function (router) {
 
+    router.post('/faceset/face/search64', async (ctx) => {
+        let ok = tools.required(ctx, ["group_id"]);
+        if (ok) {
+            let group_id = ctx.request.query['group_id'];
+            let base64 = ctx.request.body['base64'];
+
+            console.log(`path :\t\x1B[33m/search \t \x1B[0m \x1B[36m { group_id : ${group_id} } \x1B[0m`);
+
+            let serverFilePath = path.join(__dirname, '../../public/images/' + Date.now() +'.png');
+
+            var dataBuffer = new Buffer(base64, 'base64'); //把base64码转成buffer对象，
+            fs.writeFile(serverFilePath,dataBuffer,async function(err){//用fs写入文件
+                if(err){
+                    console.log(err);
+                }else{
+                    console.log('写入成功！', serverFilePath);
+                    // 计算图片特征, python 那边计算特征
+                    let options = {
+                        method: 'get',
+                        url: `${Config.server.service.uri}/query?group_id=${group_id}&image_path=${serverFilePath}`,
+                        json: true,
+                        headers: {
+                            "content-type": "application/json",
+                        },
+                        body: {}
+                    };
+
+                    let r = await requestEx(options);
+                    fs.unlink(serverFilePath,()=>{});
+
+                    ctx.body = {error_code: 0, data: r};
+                }
+            });
+
+
+        }
+    });
 // 人脸搜索
     router.post('/faceset/face/search', async (ctx) => {
         let ok = tools.required(ctx, ["group_id"]);
@@ -84,7 +123,14 @@ module.exports = function (router) {
             fs.createReadStream(f.path).pipe(unzip.Extract({ path:zipath})).on('close',()=>{
                 let pa = fs.readdirSync(zipath);
 
-                pa.forEach(function(dir){
+                pa.forEach(async function(dir){
+                    let userCount = await userLogic.exist(group_id, dir);
+
+
+                    if(userCount.total === 0){
+                        await userLogic.create({group_id:group_id, user_id:dir, desc:""});
+                    }
+
                     let info = fs.statSync(zipath+"/"+dir);
                     if(info.isDirectory()){
                         let files = fs.readdirSync(zipath+"/"+dir);

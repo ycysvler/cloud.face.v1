@@ -56,7 +56,6 @@ export default class FaceList extends React.Component {
     // 取消添加组的弹窗
     handleCancel = (e) => {
         this.setState({
-            batch:false,
             visible: false,
         });
     };
@@ -91,8 +90,7 @@ export default class FaceList extends React.Component {
                 <Layout className="list-content">
                     <Header className="list-header">
                         <Button type="primary" onClick={this.showModal}>添加人像</Button>
-                        <Button type="primary" onClick={this.showBatchModal}
-                                style={{marginLeft: 16}}>批量添加</Button>
+
                     </Header>
                     <Content >
                         <div style={{display: 'flex', flexWrap: 'wrap', background:'#fbfbfb', padding:8}}>
@@ -139,30 +137,7 @@ export default class FaceList extends React.Component {
                             </Row>
                         </Modal>
 
-                        <Modal
-                            className="modify"
-                            title="上传人像"
-                            width={160}
-                            visible={this.state.batch}
-                            onOk={this.handleOk}
-                            onCancel={this.handleCancel}
-                            footer={null}
-                        >
 
-                            <Row >
-
-                                <Col span={24}>
-                                    <Upload
-                                        showUploadList={false}
-                                        action={Config.server + `/rest/face/v3/faceset/face/batch?group_id=${this.state.group_id}`}
-                                        listType="picture-card"
-                                        onChange={this.uploadChange}
-                                    >
-                                        {uploadButton}
-                                    </Upload>
-                                </Col>
-                            </Row>
-                        </Modal>
                     </Content>
                 </Layout>
             </Layout>

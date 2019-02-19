@@ -4,6 +4,7 @@ import propx from '../http/proxy';
 
 const FaceActions = Reflux.createActions([
         'list',
+        'querybase64',
         'delete'
     ]
 );
@@ -29,6 +30,17 @@ const FaceStore = Reflux.createStore({
             }
 
             self.trigger('list', {total: self.items.length, list: self.items, param: param});
+        });
+    },
+
+    onQuerybase64:function(group_id, base64){
+        let self = this;
+        let url = Config.server + `/rest/face/v3/faceset/face/search64?group_id=${group_id}`;
+        let param = {base64:base64};
+
+        propx.post(url, param, (code, data) => {
+            console.log(url, JSON.stringify(param));
+            //self.trigger('delete', {data:data, param: param});
         });
     },
 

@@ -36,6 +36,15 @@ module.exports = class UserLogic {
         });
     }
 
+    exist(group_id, user_id){
+        return new Promise((resolve, reject) => {
+            let doc = getMongoPool().User;
+            doc.count({group_id:group_id, user_id:user_id}).exec(function (err, total) {
+                resolve({total});
+            });
+        });
+    }
+
     remove(data) {
         return new Promise((resolve, reject) => {
             let doc = getMongoPool().User;

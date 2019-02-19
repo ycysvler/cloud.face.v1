@@ -23,6 +23,26 @@ export default class FaceQuery extends React.Component {
     }
 
     componentDidMount() {
+        let self = this;
+        if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
+            //调用用户媒体设备, 访问摄像头
+            self.getUserMedia({video : {width: 480, height: 320}},
+                (stream)=>{
+                    let CompatibleURL = window.URL || window.webkitURL;
+                    //将视频流设置为video元素的源
+                    console.log(stream);
+
+                    //video.src = CompatibleURL.createObjectURL(stream);
+                    self.refs.video.srcObject = stream;
+                    self.refs.video.play();
+                },
+                (error)=>{
+                    alert('不支持访问用户媒体');
+                    console.log('error', error);
+                });
+        } else {
+            alert('不支持访问用户媒体');
+        }
     }
 
     componentWillUnmount() {
@@ -54,9 +74,35 @@ export default class FaceQuery extends React.Component {
 
     };
 
+    getUserMedia(constraints, success, error) {
+        if (navigator.mediaDevices.getUserMedia) {
+            //最新的标准API
+            navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+        } else if (navigator.webkitGetUserMedia) {
+            //webkit核心浏览器
+            navigator.webkitGetUserMedia(constraints,success, error)
+        } else if (navigator.mozGetUserMedia) {
+            //firfox浏览器
+            navigator.mozGetUserMedia(constraints, success, error);
+        } else if (navigator.getUserMedia) {
+            //旧版API
+            navigator.getUserMedia(constraints, success, error);
+        }
+    };
+
     onRemoveFace=(face_token)=>{
         FaceActions.delete(face_token);
     };
+
+    capture=()=>{
+        let context = this.refs.canvas.getContext('2d');
+        context.drawImage(this.refs.video, 0, 0, 480, 320);
+        var imgData = this.refs.canvas.toDataURL();
+        var base64Data = imgData.substr(22);
+        console.log('base64', base64Data);
+
+        FaceActions.querybase64(this.state.group_id, base64Data);
+    }
 
     render() {
         const uploadButton = (
@@ -75,6 +121,7 @@ export default class FaceQuery extends React.Component {
                 <Layout className="list-content">
                     <Header className="list-header">
                         <Button type="primary" onClick={this.showModal}>上传人像</Button>
+                        <Button type="primary" style={{marginLeft:16}} onClick={this.capture}>截图搜索</Button>
                     </Header>
                     <Content >
                         <div style={{display: 'flex', flexWrap: 'wrap', background:'#fbfbfb', padding:8}}>
@@ -92,6 +139,11 @@ export default class FaceQuery extends React.Component {
                                 })
                             }
 
+                        </div>
+                        <div>
+                            <video id="video" ref="video" width="480" height="320" controls>
+                            </video>
+                            <canvas id="canvas" ref="canvas"  width="480" height="320" style={{marginLeft:16}}></canvas>
                         </div>
 
                         <Modal

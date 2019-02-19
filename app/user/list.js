@@ -2,8 +2,9 @@
  * Created by yanggang on 2017/3/6.
  */
 import React from 'react';
+import Config from 'config';
 import {Link} from 'react-router-dom';
-import {Layout,  Modal, Table, Breadcrumb, Button, Row, Col, Input} from 'antd';
+import {Layout, Icon,Upload, Modal, Table, Breadcrumb, Button, Row, Col, Input} from 'antd';
 import {UserStore, UserActions} from './reflux.js';
 const {Header, Content} = Layout;
 
@@ -86,6 +87,19 @@ export default class FaceUserList extends React.Component {
             visible: true,
         });
     };
+    showBatchModal = () => {
+        this.setState({
+            batch: true,
+        });
+    };
+    // 上传图片
+    uploadChange = (e) => {
+        // 刷新列表
+        UserActions.list(this.state.group_id,1,10);
+        // 隐藏弹窗
+        this.setState({batch:false,visible: false});
+    };
+
     // 确定添加组的弹窗
     handleOk = (e) => {
         let item = this.state.newItem;
@@ -95,11 +109,19 @@ export default class FaceUserList extends React.Component {
     // 取消添加组的弹窗
     handleCancel = (e) => {
         this.setState({
+            batch:false,
             visible: false,
         });
     };
 
     render() {
+        const uploadButton = (
+            <div>
+                <Icon type="plus"/>
+                <div className="ant-upload-text">Upload</div>
+            </div>
+        );
+
         return (<Layout>
                 <Breadcrumb className="breadcrumb">
                     <Breadcrumb.Item>人像库</Breadcrumb.Item>
@@ -110,6 +132,8 @@ export default class FaceUserList extends React.Component {
                 <Layout className="list-content">
                     <Header className="list-header">
                         <Button type="primary" onClick={this.showModal}>添加用户</Button>
+                        <Button  onClick={this.showBatchModal}
+                                style={{marginLeft: 16}}>批量导入</Button>
                         <Button type="danger" disabled={!this.state.deleteBtnEnable} onClick={this.deleteClick}
                                 style={{marginLeft: 16}}>删除用户</Button>
                     </Header>
@@ -162,6 +186,30 @@ export default class FaceUserList extends React.Component {
                                             item.desc = e.target.value;
                                             this.setState({newItem: item});
                                         }}/>
+                                </Col>
+                            </Row>
+                        </Modal>
+                        <Modal
+                            className="modify"
+                            title="上传人像"
+                            width={160}
+                            visible={this.state.batch}
+                            onOk={this.handleOk}
+                            onCancel={this.handleCancel}
+                            footer={null}
+                        >
+
+                            <Row >
+
+                                <Col span={24}>
+                                    <Upload
+                                        showUploadList={false}
+                                        action={Config.server + `/rest/face/v3/faceset/face/batch?group_id=${this.state.group_id}`}
+                                        listType="picture-card"
+                                        onChange={this.uploadChange}
+                                    >
+                                        {uploadButton}
+                                    </Upload>
                                 </Col>
                             </Row>
                         </Modal>
