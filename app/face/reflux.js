@@ -40,6 +40,7 @@ const FaceStore = Reflux.createStore({
 
         propx.post(url, param, (code, data) => {
             console.log(url, JSON.stringify(param));
+            console.log('data', data);
             //self.trigger('delete', {data:data, param: param});
         });
     },
